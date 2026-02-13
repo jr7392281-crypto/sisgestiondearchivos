@@ -1,0 +1,8 @@
+ .dropdown-toggle {
+        background: white;
+        border: 0px;
+    }
+
+    .dropdown-toggle::after {
+        display: none;
+    }
