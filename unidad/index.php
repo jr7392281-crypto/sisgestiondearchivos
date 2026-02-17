@@ -35,7 +35,8 @@ include('../app/controllers/carpeta/listado_carpetas.php');
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <input type="text" class="form-control" name="nombre" required>
-                                                    <input type="text" name="id_usuario" value="<?php echo $id_usuario_sesion; ?>" hidden>
+                                                    <input type="text" name="id_usuario"
+                                                        value="<?php echo $id_usuario_sesion; ?>" hidden>
                                                 </div>
                                             </div>
                                         </div>
@@ -72,7 +73,9 @@ include('../app/controllers/carpeta/listado_carpetas.php');
                         </div>
                         <div class="col-8" style="margin-top: 5px">
                             <a href="show.php?id=<?php echo $id; ?>" style="color: black;">
-                                <h3><?php echo $nombre; ?></h3>
+                                <h3 class="text-truncate mb-0" style="max-width: 150px;">
+                                    <?php echo $nombre; ?>
+                                </h3>
                             </a>
                         </div>
                         <!--- Opciones en carpeta -->
@@ -88,7 +91,7 @@ include('../app/controllers/carpeta/listado_carpetas.php');
                                         <i class="bi bi-pencil"></i>Cambiar de Nombre
                                     </button>
                                     <!--  más opciones aquí -->
-                                    <a class="dropdown-item" href="#">
+                                    <div class="dropdown-item" href="#">
                                         <i class="bi bi-gear"></i> Color de la carpeta
                                         <div class="btn-group" role="group" aria-label="Basic example">
                                             <form action="../app/controllers/carpeta/update_color_carpeta.php"
@@ -132,7 +135,7 @@ include('../app/controllers/carpeta/listado_carpetas.php');
                                                 </button>
                                             </form>
                                         </div>
-                                    </a>
+                                    </div>
                                     <a class="dropdown-item" href="#">
                                         <i class="bi bi-trash"></i>Borrar
                                     </a>

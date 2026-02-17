@@ -1,5 +1,7 @@
 <?php
 include('../../config.php'); // Incluye la conexión a la base de datos y variables globales
+include('../../../layout/sesion.php');
+proteger_admin();
 
 $id_rol = $_POST['id_rol']; // ID del rol a actualizar
 $rol = $_POST['rol'];       // Nuevo nombre del rol

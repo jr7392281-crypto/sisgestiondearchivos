@@ -3,7 +3,8 @@
 // - La conexión a la base de datos ($pdo)
 // - Variables globales como $URL o $fechaHora
 include('../../config.php');
-
+include('../../../layout/sesion.php');
+proteger_admin();
 // Obtenemos los datos enviados desde un formulario mediante POST
 $nombres = $_POST['nombre'];                // Nombre del usuario
 $email = $_POST['email'];                  // Correo electrónico

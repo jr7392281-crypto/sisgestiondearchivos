@@ -1,7 +1,7 @@
 <?php
 // Incluimos el archivo de configuración, donde está la conexión a la base de datos y otras variables globales
 include('../../config.php');
-
+include('../../../layout/sesion.php');
 // Obtenemos el ID de la carpeta que queremos renombrar, y el nuevo nombre, desde el formulario (método POST)
 $id_carpeta = $_POST['id_carpeta'];
 $nuevo_nombre = $_POST['nuevo_nombre'];
@@ -11,16 +11,13 @@ $nuevo_nombre = $_POST['nuevo_nombre'];
 $sentencia = $pdo->prepare("UPDATE tb_carpetas 
     SET nombre = :nuevo_nombre, 
         updated_at = :updated_at 
-    WHERE id_carpeta = :id_carpeta");
-
+    WHERE id_carpeta = :id_carpeta
+      AND id_usuario = :id_usuario");
 // Enlazamos los valores a los parámetros de la consulta preparada
 $sentencia->bindParam(':nuevo_nombre', $nuevo_nombre);
 $sentencia->bindParam(':updated_at', $fechaHora);
 $sentencia->bindParam(':id_carpeta', $id_carpeta);
-
-// Iniciamos la sesión para poder usar variables $_SESSION y mostrar mensajes después
-session_start();
-
+$sentencia->bindParam(':id_usuario', $id_usuario_sesion, PDO::PARAM_INT);
 // Ejecutamos la consulta y verificamos si todo salió bien
 if ($sentencia->execute()) {
     // Guardamos un mensaje de éxito que luego puede mostrarse con alguna librería como SweetAlert

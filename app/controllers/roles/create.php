@@ -1,5 +1,7 @@
 <?php
 include('../../config.php'); // Conexión a la base de datos y variables globales
+include('../../../layout/sesion.php');
+proteger_admin();
 
 $rol = $_POST['rol']; // Se obtiene el rol enviado desde el formulario
 

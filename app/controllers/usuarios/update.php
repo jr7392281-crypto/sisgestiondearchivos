@@ -1,5 +1,7 @@
 <?php
 include('../../config.php');
+include('../../../layout/sesion.php');
+proteger_admin();
 
 $nombres = $_POST['nombre'];
 $email = $_POST['email'];

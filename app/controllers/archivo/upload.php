@@ -1,44 +1,44 @@
 <?php
 include('../../config.php');
 
-// Obtener ID de carpeta
 $id_carpeta = $_POST['id_carpeta'];
 $fechaHora = date("Y-m-d H:i:s");
 
-// Verificar si el archivo fue subido correctamente
 if (!empty($_FILES['archivo']['name'])) {
-    $nombre_original = $_FILES['archivo']['name'];
 
-    // Renombrar archivo para evitar duplicados
-    $nombre_unico = date("YmdHis") . "__" . $nombre_original;
-    $ruta_destino = "../../../public/archivos_subidos/" . $nombre_unico;
+    $nombre_archivo = $_FILES['archivo']['name'];
 
-    // Mover archivo al servidor
+    // Ruta donde ya existe la carpeta con el ID
+    $ruta_destino = "../../../storage/" . $id_carpeta . "/" . $nombre_archivo;
+
     if (move_uploaded_file($_FILES['archivo']['tmp_name'], $ruta_destino)) {
 
-        // Insertar en base de datos
-        $sentencia = $pdo->prepare("INSERT INTO tb_archivos (nombre, id_carpeta, created_at) 
+        $sentencia = $pdo->prepare("INSERT INTO tb_archivos 
+                                    (nombre, id_carpeta, created_at) 
                                     VALUES (:nombre, :id_carpeta, :created_at)");
 
-        $sentencia->bindParam(':nombre', $nombre_unico);
+        $sentencia->bindParam(':nombre', $nombre_archivo);
         $sentencia->bindParam(':id_carpeta', $id_carpeta);
         $sentencia->bindParam(':created_at', $fechaHora);
 
         if ($sentencia->execute()) {
-            http_response_code(200);
-            echo "Archivo subido correctamente.";
+            $_SESSION['mensaje'] = "Archivo subido correctamente.";
+            $_SESSION['icono'] = "success";
         } else {
-            http_response_code(500);
-            echo "Error al registrar en la base de datos.";
+            $_SESSION['mensaje'] = "Error al registrar en la base de datos.";
+            $_SESSION['icono'] = "error";
         }
 
     } else {
-        http_response_code(500);
-        echo "Error al mover el archivo.";
+        $_SESSION['mensaje'] = "Error al mover el archivo.";
+        $_SESSION['icono'] = "error";
     }
 
 } else {
-    http_response_code(400);
-    echo "No se recibió ningún archivo.";
+    $_SESSION['mensaje'] = "No se recibió ningún archivo.";
+    $_SESSION['icono'] = "error";
 }
+
+header('Location:' . $URL . '/unidad/show.php?id=' . $id_carpeta);
+exit();
 ?>

@@ -1,6 +1,7 @@
 <?php
 include('../app/config.php');
 include('../layout/sesion.php');
+proteger_admin();
 include('../layout/parte1.php');
 include('../app/controllers/usuarios/show_usuario.php');
 ?>

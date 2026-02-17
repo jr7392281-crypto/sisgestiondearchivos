@@ -1,7 +1,6 @@
 <?php
 include('../../config.php');
 include('../../../layout/sesion.php');
-
 // Recibimos datos
 $nombre = $_POST['nombre'];
 $id_usuario_post = $_POST['id_usuario']; // VIENE POR POST
@@ -16,7 +15,6 @@ if ($id_usuario_post != $id_usuario_real) {
     header("Location: $URL/unidad");
     exit();
 }
-
 // Preparamos la inserción
 $sentencia = $pdo->prepare(" INSERT INTO tb_carpetas (nombre, id_usuario)
     VALUES (:nombre, :id_usuario)");

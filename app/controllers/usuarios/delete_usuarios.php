@@ -1,8 +1,8 @@
 <?php
-// Incluimos el archivo de configuración general
 // Aquí normalmente están la conexión PDO ($pdo), el timezone, $URL y otras constantes
 include('../../config.php');
-
+include('../../../layout/sesion.php');
+proteger_admin();
 // Obtenemos el ID del usuario a eliminar desde un formulario enviado por POST
 $id_usuario = $_POST['id_usuario'];
 
