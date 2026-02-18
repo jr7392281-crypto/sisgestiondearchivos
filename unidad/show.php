@@ -264,13 +264,13 @@ include('../app/controllers/archivo/listado_archivos.php');
                         // Obtener extensión
                         $extension = strtolower(pathinfo($nombre_archivo, PATHINFO_EXTENSION));
                         // Detectar tipo
-                        if ($extension == 'jpg') { ?><img src="../public/images/iconos/icono-jpg.png" width="25"
+                        if ($extension == 'jpg') { ?><img src="../public/images/iconos/icono_jpg.png" width="25"
                                 alt=""><?php }
-                        if ($extension == 'png') { ?><img src="../public/images/iconos/icono-png.png" width="25"
+                        if ($extension == 'png') { ?><img src="../public/images/iconos/icono_png.png" width="25"
                                 alt=""><?php }
-                        if ($extension == 'pdf') { ?><img src="../public/images/iconos/icono-pdf.png" width="25"
+                        if ($extension == 'pdf') { ?><img src="../public/images/iconos/icono_pdf.png" width="25"
                                 alt=""><?php }
-                        if ($extension == 'docx') { ?><img src="../public/images/iconos/icono-docx.png" width="25"
+                        if ($extension == 'docx') { ?><img src="../public/images/iconos/icono_docx.png" width="25"
                                 alt=""><?php }
                         ?>
 
@@ -279,10 +279,11 @@ include('../app/controllers/archivo/listado_archivos.php');
                             <?php echo $archivos_dato['nombre']; ?>
                         </a>
 
-                        <!-- Modal -->
-                        <div class="modal fade" id="modal_visor<?php echo $id_archivo; ?>" tabindex="-1" role="dialog"
-                            aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
+                            <?php if ($extension == 'jpg') { ?>
+                             <!-- Modal -->
+                              <div class="modal fade" id="modal_visor<?php echo $id_archivo; ?>" tabindex="-1" role="dialog"
+                               aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel"><?php echo $archivos_dato['nombre']; ?></h5>
@@ -291,15 +292,84 @@ include('../app/controllers/archivo/listado_archivos.php');
                                         </button>
                                     </div>
                                     <div class="modal-body" style="text-align: center">
-                                        <?php
-                                        if ($extension == 'png') { ?><img src="<?php echo $URL . '/storage/' . $carpeta_datos['id_carpeta'] . '/' . $archivos_dato['nombre']; ?>" 
-                                        width="100%" alt=""><?php }
-                                        ?>
+                                    <img src="<?php echo $URL . '/storage/' . $carpeta_datos['id_carpeta'] . '/' . $archivos_dato['nombre']; ?>" 
+                                     width="100%" alt="">
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- Fin del Modal Visor -->
+                        <!-- Fin del Modal Visor -->                                     
+                        <?php }?>
+
+                           <?php if ($extension == 'png') { ?>
+                             <!-- Modal -->
+                              <div class="modal fade" id="modal_visor<?php echo $id_archivo; ?>" tabindex="-1" role="dialog"
+                               aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel"><?php echo $archivos_dato['nombre']; ?></h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body" style="text-align: center">
+                                    <img src="<?php echo $URL . '/storage/' . $carpeta_datos['id_carpeta'] . '/' . $archivos_dato['nombre']; ?>" 
+                                     width="100%" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Fin del Modal Visor -->                                     
+                        <?php }?>
+
+                        
+                           <?php if ($extension == 'pdf') { ?>
+                             <!-- Modal PDF -->
+                              <div class="modal fade" id="modal_visor<?php echo $id_archivo; ?>" tabindex="-1" role="dialog"
+                               aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel"><?php echo $archivos_dato['nombre']; ?></h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body" style="text-align: center">
+                                    <iframe src="<?php echo $URL . '/storage/' . $carpeta_datos['id_carpeta'] . '/' . $archivos_dato['nombre']; ?>" 
+                                     width="100%" height="500px" alt=""></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Fin del Modal Visor -->                                     
+                        <?php }?>
+
+                          <?php if ($extension == 'docx') { ?>
+                             <!-- Modal PDF -->
+                              <div class="modal fade" id="modal_visor<?php echo $id_archivo; ?>" tabindex="-1" role="dialog"
+                               aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel"><?php echo $archivos_dato['nombre']; ?></h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body" style="text-align: center">
+                                    <img src="<?php echo $URL . "../public/images/iconos/icono_docx.png" ?>" 
+                                     width="50%" alt=""><br>
+                                     <a href="<?php echo $URL . '/storage/' . $carpeta_datos['id_carpeta'] . '/' . $archivos_dato['nombre']; ?>" class="btn btn-success">
+                                     descargar
+                                     </a>                            
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Fin del Modal Visor -->                                     
+                        <?php }?>
 
                     </td>
                     <td> <?php echo $archivos_dato['created_at']; ?></td>
