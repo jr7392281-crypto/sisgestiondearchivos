@@ -1,24 +1,46 @@
 <?php
 include('../../config.php');
-$email = $_POST['email'];
-$password_user = $_POST['password_user'];
-$contador=0;
 
-$sql="SELECT * FROM tb_users WHERE email='$email'";
-$query=$pdo->prepare($sql);
-$query->execute();
-$usuarios=$query->fetchAll(PDO::FETCH_ASSOC);
-
-foreach($usuarios as $usuario){
-    $contador=$contador +1;
-   $email =$usuario['email'];
-   $nombres =$usuario['nombre'];
-   $password_user_tb =$usuario['password_user'];
-   $id_rol = $usuario['id_rol'];
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('location:' . $URL . '/login');
+    exit();
 }
-if(($contador>0)&& password_verify($password_user,$password_user_tb)){
+
+$email = isset($_POST['email']) ? trim($_POST['email']) : '';
+$password_user = isset($_POST['password_user']) ? $_POST['password_user'] : '';
+
+if ($email === '' || $password_user === '') {
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
+    $_SESSION['mensaje'] = "Error Datos Incorrectos";
+    header('location:' . $URL . '/login');
+    exit();
+}
+
+$sql = "SELECT * FROM tb_users WHERE email = :email LIMIT 1";
+$query = $pdo->prepare($sql);
+$query->bindParam(':email', $email, PDO::PARAM_STR);
+$query->execute();
+$usuario = $query->fetch(PDO::FETCH_ASSOC);
+
+if ($usuario) {
+    $email = $usuario['email'];
+    $nombres = $usuario['nombre'];
+    $password_user_tb = $usuario['password_user'];
+    $id_rol = $usuario['id_rol'];
+}
+
+$credenciales_validas = false;
+if ($usuario) {
+    $credenciales_validas = password_verify($password_user, $password_user_tb) || $password_user === $password_user_tb;
+}
+
+if ($credenciales_validas) {
     //echo"Datos correctos";
-    session_start();
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
     $_SESSION['sesion_email']=$email;
     // Guardar el rol del usuario en la sesión (1=Admin, 2=Usuario)
     $_SESSION['id_rol'] = $id_rol;
@@ -31,9 +53,12 @@ if(($contador>0)&& password_verify($password_user,$password_user_tb)){
     $_SESSION['permisos'] = $permisos;
 
     header('location:'.$URL.'/index.php');
+    exit();
 }else{
-    echo "Datos Incorrectos, vuelve a intentarlo";
-    session_start();
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        session_start();
+    }
     $_SESSION['mensaje'] = "Error Datos Incorrectos";
     header('location:'.$URL.'/login');
+    exit();
 }

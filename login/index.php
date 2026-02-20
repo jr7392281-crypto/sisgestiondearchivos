@@ -23,17 +23,20 @@
         <?php
         session_start();
         if (isset($_SESSION['mensaje'])) {
-            $respuesta = $_SESSION['mensaje']; ?>
+            $respuesta = $_SESSION['mensaje'];
+            $icono = isset($_SESSION['icono']) ? $_SESSION['icono'] : 'error'; ?>
             <script>
                 Swal.fire({
                     position: "top-end",
-                    icon: "error",
+                    icon: "<?php echo $icono; ?>",
                     title: ' <?php echo $respuesta ?>',
                     showConfirmButton: false,
                     timer: 1500
                 });
             </script>
             <?php
+            unset($_SESSION['mensaje']);
+            unset($_SESSION['icono']);
         }
         ?>
         <center>
