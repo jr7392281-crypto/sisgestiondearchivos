@@ -9,7 +9,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sistema de Gestion de Archivos</title>
-
+    <!-- CSS de Video.js -->
+    <link href="https://vjs.zencdn.net/8.23.4/video-js.css" rel="stylesheet" />
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -43,7 +44,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-        |
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <!-- Left navbar links -->
@@ -52,7 +52,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a href="#" class="nav-link">Sistema de gestion</a>
+                    <a href="<?php echo $URL;?>" class="nav-link">Sistema de gestion</a>
                 </li>
             </ul>
 
@@ -73,7 +73,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="<?php echo $URL; ?>" class="brand-link">
+            <a href="<?php echo $URL;?>" class="brand-link">
                 <img src="<?php echo $URL; ?>/public/images/folder.png" alt="AdminLTE Logo"
                     class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">SIS GEST</span>
@@ -84,8 +84,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="<?php echo $URL; ?>/public/images/usuario.png"
-                            class="img-circle elevation-2" alt="User Image">
+                        <img src="<?php echo $URL; ?>/public/images/usuario.png" class="img-circle elevation-2"
+                            alt="User Image">
                     </div>
                     <div class="info">
                         <a href="#" class="d-block"><?php echo $nombres_sesion; ?></a>
@@ -100,57 +100,57 @@ scratch. This page gets rid of all links and provides the needed markup only.
                with font-awesome or any other icon font library -->
                         <!-- Mostrar opciones de Usuarios y Roles solo para Administrador -->
                         <?php if (isset($_SESSION['id_rol']) && $_SESSION['id_rol'] == 1) { ?>
-                        <!--Usuarios -->
-                        <li class="nav-item">
-                            <a href="#" class="nav-link active">
-                                <i class="nav-icon fas fa-users"></i>
-                                <p>
-                                    Usuarios
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="<?php echo $URL; ?>/usuarios" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Listado de usuarios</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="<?php echo $URL; ?>/usuarios/create.php" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Creación de usuario</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <!-- fin de usuarios -->
+                            <!--Usuarios -->
+                            <li class="nav-item">
+                                <a href="#" class="nav-link active">
+                                    <i class="nav-icon fas fa-users"></i>
+                                    <p>
+                                        Usuarios
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="<?php echo $URL; ?>/usuarios" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Listado de usuarios</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="<?php echo $URL; ?>/usuarios/create.php" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Creación de usuario</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- fin de usuarios -->
 
-                        <!-- Roles -->
-                        <li class="nav-item">
-                            <a href="#" class="nav-link active">
-                                <i class="nav-icon fas fa-address-card"></i>
-                                <p>
-                                    Roles
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="<?php echo $URL; ?>/roles" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Listado de roles</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="<?php echo $URL; ?>/roles/create.php" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Creación de rol</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <!-- fin de roles -->
+                            <!-- Roles -->
+                            <li class="nav-item">
+                                <a href="#" class="nav-link active">
+                                    <i class="nav-icon fas fa-address-card"></i>
+                                    <p>
+                                        Roles
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="<?php echo $URL; ?>/roles" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Listado de roles</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="<?php echo $URL; ?>/roles/create.php" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Creación de rol</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- fin de roles -->
                         <?php } ?>
 
                         <!-- Mi unidad -->

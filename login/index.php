@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="../public/templates/AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css">
 
     <link rel="stylesheet"
-        href="../public/templates/templates/AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+        href="../public/templates/AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
 
     <link rel="stylesheet" href="../public/templates/AdminLTE-3.2.0/dist/css/adminlte.min.css?v=3.2.0">
     <!-- Librería SweetAlert -->
@@ -56,10 +56,12 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" name="password_user" class="form-control" placeholder="Password">
+                    <input type="password" id="password_user" name="password_user" class="form-control"
+                        placeholder="Password">
                     <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-lock"></span>
+                        <div class="input-group-text text-muted" style="cursor:pointer;background:#fff;"
+                            onclick="togglePasswordLogin()">
+                            <span id="icono_password" class="fas fa-eye"></span>
                         </div>
                     </div>
                 </div>
@@ -77,11 +79,24 @@
 
     </div>
 
-    <script src="../../plugins/jquery/jquery.js"></script>
-
-    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <script src="../../dist/js/adminlte.min.js?v=3.2.0"></script>
+    <script src="../public/templates/AdminLTE-3.2.0/plugins/jquery/jquery.min.js"></script>
+    <script src="../public/templates/AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../public/templates/AdminLTE-3.2.0/dist/js/adminlte.min.js?v=3.2.0"></script>
+    <script>
+        function togglePasswordLogin() {
+            var input = document.getElementById('password_user');
+            var icon = document.getElementById('icono_password');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </body>
 
 </html>

@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="../public/templates/AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css">
 
     <link rel="stylesheet"
-        href="../public/templates/templates/AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+        href="../public/templates/AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
 
     <link rel="stylesheet" href="../public/templates/AdminLTE-3.2.0/dist/css/adminlte.min.css?v=3.2.0">
     <!-- Librería SweetAlert -->
@@ -73,11 +73,9 @@
         </div>
     </div>
 
-    <script src="../../plugins/jquery/jquery.js"></script>
-
-    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <script src="../../dist/js/adminlte.min.js?v=3.2.0"></script>
+    <script src="../public/templates/AdminLTE-3.2.0/plugins/jquery/jquery.min.js"></script>
+    <script src="../public/templates/AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../public/templates/AdminLTE-3.2.0/dist/js/adminlte.min.js?v=3.2.0"></script>
 </body>
 
 </html>

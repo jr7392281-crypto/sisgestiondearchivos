@@ -4,7 +4,7 @@ include('layout/sesion.php');
 include('layout/parte1.php');
 include('app/controllers/carpeta/listado_carpetas.php');
 include('app/controllers/usuarios/listado_de_usuarios.php');
-//include('app/controllers/roles/listado_de_roles.php');
+include('app/controllers/archivo/listado_total_archivos.php');
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -25,8 +25,6 @@ include('app/controllers/usuarios/listado_de_usuarios.php');
       <br><br>
 
       <div class="row">
-        <?php if (!isset($_SESSION['id_rol']) || $_SESSION['id_rol'] != 1): ?>
-        <?php endif; ?>
         <?php if (isset($_SESSION['id_rol']) && $_SESSION['id_rol'] == 1): ?>
           <!-- Usuarios (solo admin) -->
           <div class="col-lg-3 col-6">
@@ -53,30 +51,55 @@ include('app/controllers/usuarios/listado_de_usuarios.php');
           </div>
         <?php endif; ?>
 
-        <!-- Carpetas -->
-        <div class="col-lg-3 col-6">
-          <div class="small-box bg-info">
-            <div class="inner">
-              <?php
-              $contador_de_carpetas = 0;
-              foreach ($carpeta_datos as $carpeta_dato) {
-                $contador_de_carpetas++;
-              }
-              ?>
-              <h3><?php echo $contador_de_carpetas; ?></h3>
-              <p>Carpetas en el sistema</p>
-            </div>
-            <a href="<?php echo $URL; ?>/unidad">
-              <div class="icon">
-                <i class="fas fa-list"></i>
+        <?php if (isset($_SESSION['id_rol']) && $_SESSION['id_rol'] == 1): ?>
+          <!-- Carpetas -->
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-info">
+              <div class="inner">
+                <?php
+                $contador_de_carpetas = 0;
+                foreach ($carpeta_datos as $carpeta_dato) {
+                  $contador_de_carpetas++;
+                }
+                ?>
+                <h3><?php echo $contador_de_carpetas; ?></h3>
+                <p>Carpetas en el sistema</p>
               </div>
-            </a>
-            <a href="<?php echo $URL; ?>/unidad" class="small-box-footer">
-              Mas detalles <i class="fas fa-arrow-circle-right"></i>
-            </a>
+              <a href="<?php echo $URL; ?>/unidad">
+                <div class="icon">
+                  <i class="fas fa-folder"></i>
+                </div>
+              </a>
+              <a href="<?php echo $URL; ?>/unidad" class="small-box-footer">
+               <i class="fas fa-arrow-circle-right"></i>
+              </a>
+            </div>
           </div>
-        </div>
-        <!-- Fin de carpetas -->
+          <!-- Fin de carpetas -->
+        <?php endif; ?>
+                <?php if (isset($_SESSION['id_rol']) && $_SESSION['id_rol'] == 1): ?>
+          <!-- Archivos -->
+           <div class="col-lg-3 col-6">
+            <div class="small-box bg-info">
+              <div class="inner">
+                <?php
+                $contador_de_archivos = $archivos_datos['total'];
+                ?>
+                <h3><?php echo $contador_de_archivos; ?></h3>
+                <p>Archivos en el sistema</p>
+              </div>
+              <a href="<?php echo $URL; ?>/unidad">
+                <div class="icon">
+                  <i class="fas fa-file"></i>
+                </div>
+              </a>
+              <a href="<?php echo $URL; ?>/unidad" class="small-box-footer">
+               <i class="fas fa-arrow-circle-right"></i>
+              </a>
+            </div>
+          </div>
+          <!-- Fin de archivos -->
+        <?php endif; ?>
       </div>
     </div>
   </div>

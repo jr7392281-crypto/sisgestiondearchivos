@@ -97,10 +97,6 @@ include('../app/controllers/roles/listado_de_roles.php');
   <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
-<?php
-include('../layout/mensajes.php');
-include('../layout/parte2.php');
-?>
 <script>
   $(function () {
     $("#example1").DataTable({
@@ -158,3 +154,7 @@ include('../layout/parte2.php');
 
   });
 </script>
+<?php
+include('../layout/mensajes.php');
+include('../layout/parte2.php');
+?>

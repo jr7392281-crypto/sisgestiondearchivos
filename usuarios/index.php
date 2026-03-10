@@ -68,10 +68,10 @@ include_once('../app/helpers/permisos.php');
                     $id_usuario = $usuarios_dato['id_usuario']; ?>
                     <tr>
                       <td>
-                        <center><?php echo $contador = $contador + 1; ?></center< /td>
+                        <center><?php echo $contador = $contador + 1; ?></center></td>
                       <td><?php echo $usuarios_dato['nombre']; ?></td>
                       <td><?php echo $usuarios_dato['email']; ?></td>
-                      <td><center><?php echo $usuarios_dato['rol']; ?></center< /td>
+                      <td><center><?php echo $usuarios_dato['rol']; ?></center></td>
                       <td>
                         <center>
                           <div class="btn-group">
@@ -119,10 +119,6 @@ include_once('../app/helpers/permisos.php');
   <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
-<?php
-include('../layout/mensajes.php');
-include('../layout/parte2.php');
-?>
 <script>
   $(function() {
     $("#example1").DataTable({
@@ -179,3 +175,7 @@ include('../layout/parte2.php');
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
   });
 </script>
+<?php
+include('../layout/mensajes.php');
+include('../layout/parte2.php');
+?>

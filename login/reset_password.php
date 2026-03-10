@@ -53,21 +53,23 @@
                     <input type="hidden" name="token" value="<?php echo htmlspecialchars($token, ENT_QUOTES, 'UTF-8'); ?>">
 
                     <div class="input-group mb-3">
-                        <input type="password" name="password_user" class="form-control" placeholder="Nueva contrasena"
+                        <input type="password" id="password_user" name="password_user" class="form-control" placeholder="Nueva contrasena"
                             required minlength="6">
                         <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
+                            <div class="input-group-text text-muted" style="cursor:pointer;background:#fff;"
+                                onclick="togglePasswordReset('password_user', 'icono_password_user')">
+                                <span id="icono_password_user" class="fas fa-eye"></span>
                             </div>
                         </div>
                     </div>
 
                     <div class="input-group mb-3">
-                        <input type="password" name="password_confirm" class="form-control"
+                        <input type="password" id="password_confirm" name="password_confirm" class="form-control"
                             placeholder="Confirmar contrasena" required minlength="6">
                         <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
+                            <div class="input-group-text text-muted" style="cursor:pointer;background:#fff;"
+                                onclick="togglePasswordReset('password_confirm', 'icono_password_confirm')">
+                                <span id="icono_password_confirm" class="fas fa-eye"></span>
                             </div>
                         </div>
                     </div>
@@ -86,6 +88,21 @@
     <script src="../public/templates/AdminLTE-3.2.0/plugins/jquery/jquery.min.js"></script>
     <script src="../public/templates/AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../public/templates/AdminLTE-3.2.0/dist/js/adminlte.min.js?v=3.2.0"></script>
+    <script>
+        function togglePasswordReset(idInput, idIcono) {
+            var input = document.getElementById(idInput);
+            var icon = document.getElementById(idIcono);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </body>
 
 </html>

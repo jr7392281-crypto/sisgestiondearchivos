@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-02-2026 a las 00:44:42
+-- Tiempo de generación: 28-02-2026 a las 23:53:21
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -30,6 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `tb_archivos` (
   `id_archivos` int(11) UNSIGNED NOT NULL,
   `nombre` varchar(255) NOT NULL,
+  `estado_archivo` enum('privado','publico') NOT NULL DEFAULT 'privado',
   `id_carpeta` int(11) UNSIGNED DEFAULT NULL,
   `tipo` varchar(50) NOT NULL,
   `tamaño` int(10) UNSIGNED NOT NULL,
@@ -37,17 +38,6 @@ CREATE TABLE `tb_archivos` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `tb_archivos`
---
-
-INSERT INTO `tb_archivos` (`id_archivos`, `nombre`, `id_carpeta`, `tipo`, `tamaño`, `ruta`, `created_at`, `updated_at`) VALUES
-(9, '20260210175549__tecnohogar.docx', 7, '', 0, '', '2026-02-10 22:55:49', '2026-02-10 22:55:49'),
-(10, '20260213170743__Gran Chocolatada.png', 1, '', 0, '', '2026-02-13 22:07:43', '2026-02-13 22:07:43'),
-(11, '20260213170811__Picsart_24-09-02_17-52-54-055.jpg', 1, '', 0, '', '2026-02-13 22:08:11', '2026-02-13 22:08:11'),
-(12, '20260213172828__Informe-Modulo2.pdf', 1, '', 0, '', '2026-02-13 22:28:28', '2026-02-13 22:28:28'),
-(13, '20260213172837__MODUL0 2 FINAL.docx', 1, '', 0, '', '2026-02-13 22:28:37', '2026-02-13 22:28:37');
 
 -- --------------------------------------------------------
 
@@ -72,21 +62,31 @@ CREATE TABLE `tb_carpetas` (
 INSERT INTO `tb_carpetas` (`id_carpeta`, `nombre`, `color`, `carpeta_padre_id`, `id_usuario`, `created_at`, `updated_at`) VALUES
 (1, '2020', 'yellow', NULL, 3, '2025-12-01 02:18:16', '2025-12-01 02:18:16'),
 (2, '2021', 'green', NULL, 3, '2025-12-01 02:18:23', '2025-12-01 02:18:23'),
-(3, 'Documentos Generales', 'black', NULL, 3, '2025-12-01 02:27:07', '2025-12-01 02:27:07'),
-(4, 'Recursos Humanos', 'green', NULL, 3, '2025-12-01 02:27:07', '2025-12-01 02:27:07'),
+(3, 'Documentos trabajo', 'black', NULL, 3, '2025-12-01 02:27:07', '2026-02-16 01:58:41'),
+(4, 'Recursos ', 'green', NULL, 3, '2025-12-01 02:27:07', '2026-02-16 01:35:55'),
 (5, 'Logística', 'green', NULL, 3, '2025-12-01 02:27:07', '2025-12-01 02:27:07'),
 (6, 'Informes', 'yellow', NULL, 3, '2025-12-01 02:27:07', '2025-12-01 02:27:07'),
 (7, 'Tesorería', 'black', NULL, 3, '2025-12-01 02:27:07', '2025-12-01 02:27:07'),
-(8, 'Archivo Histórico', 'red', NULL, 3, '2025-12-01 02:27:07', '2025-12-01 02:27:07'),
-(9, 'Trámite Documentario', 'blue', NULL, 3, '2025-12-01 02:27:07', '2025-12-01 02:27:07'),
-(10, 'Proyectos y Obras', 'blue', NULL, 3, '2025-12-01 02:27:07', '2025-12-01 02:27:07'),
+(8, 'Archivo ', 'red', NULL, 3, '2025-12-01 02:27:07', '2026-02-16 01:36:25'),
+(9, 'Trámite ', 'blue', NULL, 3, '2025-12-01 02:27:07', '2026-02-16 01:41:34'),
+(10, 'Proyectos', 'yellow', NULL, 3, '2025-12-01 02:27:07', '2026-02-16 01:41:27'),
 (11, 'Contratos', NULL, 2, 3, '2025-12-01 02:29:54', '2025-12-01 02:29:54'),
 (12, 'Asistencias', NULL, 2, 3, '2025-12-01 02:29:54', '2025-12-01 02:29:54'),
 (13, 'Memorandos', NULL, 2, 3, '2025-12-01 02:29:54', '2025-12-01 02:29:54'),
 (14, 'Personal Cesado', NULL, 2, 3, '2025-12-01 02:29:54', '2025-12-01 02:29:54'),
 (15, 'cvbc', NULL, 10, NULL, '2026-02-10 22:13:15', '2026-02-10 22:13:15'),
 (16, 'bbn', NULL, 5, NULL, '2026-02-10 22:13:35', '2026-02-10 22:13:35'),
-(17, 'd', NULL, 5, NULL, '2026-02-10 22:13:44', '2026-02-10 22:13:44');
+(17, 'd', NULL, 5, NULL, '2026-02-10 22:13:44', '2026-02-10 22:13:44'),
+(18, '98', 'blue', NULL, 4, '2026-02-14 23:15:53', '2026-02-14 23:15:53'),
+(19, '98', 'red', NULL, 5, '2026-02-14 23:20:58', '2026-02-14 23:20:58'),
+(20, 'nuevo', NULL, 3, 3, '2026-02-16 01:41:45', '2026-02-16 01:41:45'),
+(21, 'new', NULL, 3, 3, '2026-02-16 01:42:02', '2026-02-16 01:42:02'),
+(22, 'newton', NULL, 3, 3, '2026-02-16 01:43:37', '2026-02-16 01:43:37'),
+(23, 'new', 'blue', NULL, 5, '2026-02-20 00:20:03', '2026-02-20 00:20:03'),
+(24, 'josue', 'green', NULL, 5, '2026-02-20 00:20:11', '2026-02-20 00:20:11'),
+(25, 'newton', NULL, 2, 3, '2026-02-25 02:15:05', '2026-02-25 02:15:05'),
+(26, 'steve', 'green', NULL, 3, '2026-02-25 02:15:21', '2026-02-25 02:15:21'),
+(27, 'nuevo', NULL, 26, 3, '2026-02-25 02:15:29', '2026-02-25 02:15:29');
 
 -- --------------------------------------------------------
 
@@ -174,7 +174,8 @@ INSERT INTO `tb_users` (`id_usuario`, `nombre`, `email`, `password_user`, `id_ro
 (1, 'Carlos', 'carlos@gmail.com', '1234', 1, '2025-11-30 20:41:25', '2025-11-30 20:41:25'),
 (2, 'Raul', 'Raul@gmail.com', '1234', 2, '2025-11-30 20:42:13', '2025-11-30 20:42:13'),
 (3, 'jose', 'jose@gmail.com', '$2y$10$m/pNiS8E/qANdGDpz999sOabjm2oGHZDyyK2JubW0Bz4GIJ88yVDy', 1, '2025-12-01 02:14:24', '2025-12-01 02:17:12'),
-(4, 'josue', 'jos@gmail.com', '$2y$10$CyRZxQdDd7d8/NSJsz6J4eqY7q6wPuo.SUTRAbLtGFReBWzaEyCsK', 2, '2026-02-11 23:19:39', '2026-02-11 23:19:39');
+(4, 'josue', 'jos@gmail.com', '$2y$10$CyRZxQdDd7d8/NSJsz6J4eqY7q6wPuo.SUTRAbLtGFReBWzaEyCsK', 2, '2026-02-11 23:19:39', '2026-02-11 23:19:39'),
+(5, 'steve', 'steve@gmail.com', '$2y$10$tXNBOv9hpJJktXppWPQEqOpCVcQUnpzL9w0n6I.MDkI7qfaZIaATK', 2, '2026-02-14 23:19:40', '2026-02-14 23:19:41');
 
 --
 -- Índices para tablas volcadas
@@ -230,19 +231,19 @@ ALTER TABLE `tb_users`
 -- AUTO_INCREMENT de la tabla `tb_archivos`
 --
 ALTER TABLE `tb_archivos`
-  MODIFY `id_archivos` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_archivos` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tb_carpetas`
 --
 ALTER TABLE `tb_carpetas`
-  MODIFY `id_carpeta` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id_carpeta` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de la tabla `tb_password_reset`
 --
 ALTER TABLE `tb_password_reset`
-  MODIFY `id_reset` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_reset` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `tb_permision`
@@ -260,7 +261,7 @@ ALTER TABLE `tb_roles`
 -- AUTO_INCREMENT de la tabla `tb_users`
 --
 ALTER TABLE `tb_users`
-  MODIFY `id_usuario` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_usuario` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Restricciones para tablas volcadas

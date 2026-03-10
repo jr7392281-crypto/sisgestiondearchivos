@@ -13,6 +13,7 @@ try {
 }
 
 $URL = "http://localhost/sistemagestion";
+$PRIVATE_STORAGE = dirname(__DIR__) . "/storage/private";
 
 date_default_timezone_set("America/Lima");
 $fechaHora = date('Y-m-d H:i:s');

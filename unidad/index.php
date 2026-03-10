@@ -136,9 +136,12 @@ include('../app/controllers/carpeta/listado_carpetas.php');
                                             </form>
                                         </div>
                                     </div>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="bi bi-trash"></i>Borrar
-                                    </a>
+                                    <form action="../app/controllers/carpeta/delete_carpeta.php" method="post">
+                                        <input type="text" name="id_carpeta" value="<?php echo $id; ?>" hidden>
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="bi bi-trash"></i>Borrar
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

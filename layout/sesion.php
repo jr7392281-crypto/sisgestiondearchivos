@@ -28,7 +28,7 @@ if (isset($_SESSION['sesion_email'])) {
         }
     }
 } else {
-    echo "No existe sesión";
     header('location:' . $URL . '/login');
+    exit();
 }
 ?>
