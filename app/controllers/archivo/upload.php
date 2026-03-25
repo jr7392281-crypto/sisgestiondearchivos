@@ -52,7 +52,7 @@ if (!isset($_FILES['archivo']) || $_FILES['archivo']['name'] === '') {
     exit();
 }
 
-$permitidos = ['jpg', 'jpeg', 'png', 'webp', 'pdf', 'docx', 'xlsx', 'pptx', 'mp4', 'mp3'];
+$permitidos = ['jpg', 'jpeg', 'png', 'pdf', 'docx', 'mp4'];
 $max_bytes = 50 * 1024 * 1024;
 
 $nombre_original = basename($_FILES['archivo']['name']);

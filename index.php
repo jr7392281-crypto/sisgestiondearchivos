@@ -104,7 +104,6 @@ include('app/controllers/archivo/listado_total_archivos.php');
     </div>
   </div>
 </div>
-
 <?php
 include('layout/parte2.php');
 ?>

@@ -54,7 +54,7 @@ include('../app/controllers/archivo/listado_archivos.php');
                     <script>
                         Dropzone.options.myDropzone = {
                             paramName: "archivo",
-                            acceptedFiles: ".jpg,.jpeg,.png,.webp,.pdf,.docx,.xlsx,.pptx,.mp4,.mp3", // ext permitidas
+                            acceptedFiles: ".jpg,.jpeg,.png,.pdf,.docx,.mp4", // ext permitidas
                             autoProcessQueue: true,
                             dictDefaultMessage: "Arrastra tus archivos aquí o haz clic para subir",
                             init: function () {
@@ -263,9 +263,8 @@ include('../app/controllers/archivo/listado_archivos.php');
             foreach ($archivos_datos as $archivos_dato) {
                 $id_archivo = $archivos_dato['id_archivos'];
                 $nombre_archivo = $archivos_dato['nombre'];
-                $estado_archivo = $archivos_dato['estado_archivo'];
-                $url_compartir = $URL . '/app/controllers/archivo/ver_publico.php?id=' . $id_archivo;
-                $url_compartir_descarga = $url_compartir . '&descargar=1';
+                $url_archivo = $URL . '/app/controllers/archivo/ver_archivo.php?id=' . $id_archivo;
+                $url_descarga = $url_archivo . '&descargar=1';
 
                 ?>
                 <tr>
@@ -277,8 +276,6 @@ include('../app/controllers/archivo/listado_archivos.php');
                         $nombre_archivo = $archivos_dato['nombre'];
                         // Obtener extensión
                         $extension = strtolower(pathinfo($nombre_archivo, PATHINFO_EXTENSION));
-                        $url_archivo_privado = $URL . '/app/controllers/archivo/ver_archivo.php?id=' . $id_archivo;
-                        $url_archivo = ($estado_archivo == 'publico') ? $url_compartir : $url_archivo_privado;
                         $url_descarga = $url_archivo . '&descargar=1';
                         // Detectar tipo
                         if ($extension == 'jpg') { ?><img src="../public/images/iconos/icono_jpg.png" width="25"
@@ -287,19 +284,11 @@ include('../app/controllers/archivo/listado_archivos.php');
                                 alt=""><?php }
                         if ($extension == 'png') { ?><img src="../public/images/iconos/icono_png.png" width="25"
                                 alt=""><?php }
-                        if ($extension == 'webp') { ?><img src="../public/images/iconos/icono_webp.png" width="25"
-                                alt=""><?php }
                         if ($extension == 'pdf') { ?><img src="../public/images/iconos/icono_pdf.png" width="25"
                                 alt=""><?php }
                         if ($extension == 'docx') { ?><img src="../public/images/iconos/icono_docx.png" width="25"
                                 alt=""><?php }
-                        if ($extension == 'xlsx') { ?><img src="../public/images/iconos/icono_excel.png" width="25"
-                                alt=""><?php }
-                        if ($extension == 'pptx') { ?><img
-                                src="../public/images/iconos/icono_power.png" width="25" alt=""><?php }
                         if ($extension == 'mp4') { ?><img src="../public/images/iconos/icono_video.png" width="25"
-                                alt=""><?php }
-                        if ($extension == 'mp3') { ?><img src="../public/images/iconos/icono_mp3.png" width="25"
                                 alt=""><?php }
                         ?>
 
@@ -308,7 +297,7 @@ include('../app/controllers/archivo/listado_archivos.php');
                             <?php echo $archivos_dato['nombre']; ?>
                         </a>
 
-                        <?php if ($extension == 'jpg' || $extension == 'jpeg' || $extension == 'webp' || $extension == 'png') { ?>
+                        <?php if ($extension == 'jpg' || $extension == 'jpeg' || $extension == 'png') { ?>
                             <!-- Modal JPG-->
                             <div class="modal fade" id="modal_visor<?php echo $id_archivo; ?>" tabindex="-1" role="dialog"
                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -357,62 +346,6 @@ include('../app/controllers/archivo/listado_archivos.php');
                                         </div>
                                         <div class="modal-body" style="text-align: center">
                                             <img src="<?php echo $URL . "/public/images/iconos/icono_docx.png" ?>" width="50%"
-                                                alt=""><br>
-                                            <a href="<?php echo $url_descarga; ?>" class="btn btn-success">
-                                                descargar
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Fin del Modal Visor -->
-                        <?php } ?>
-
-                        <?php if ($extension == 'pptx') { ?>
-                            <!-- Modal PowerPoint -->
-                            <div class="modal fade" id="modal_visor<?php echo $id_archivo; ?>" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title text-truncate pr-4" id="exampleModalLabel"
-                                                style="max-width: 90%;">
-                                                <?php echo $nombre_archivo; ?>
-                                            </h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body" style="text-align: center">
-                                            <img src="<?php echo $URL . "/public/images/iconos/icono_power.png" ?>" width="50%"
-                                                alt=""><br>
-                                            <a href="<?php echo $url_descarga; ?>" class="btn btn-success">
-                                                descargar
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Fin del Modal Visor -->
-                        <?php } ?>
-
-                        <?php if ($extension == 'xlsx') { ?>
-                            <!-- Modal Excel -->
-                            <div class="modal fade" id="modal_visor<?php echo $id_archivo; ?>" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title text-truncate pr-4" id="exampleModalLabel"
-                                                style="max-width: 90%;">
-                                                <?php echo $nombre_archivo; ?>
-                                            </h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body" style="text-align: center">
-                                            <img src="<?php echo $URL . "/public/images/iconos/icono_excel.png" ?>" width="50%"
                                                 alt=""><br>
                                             <a href="<?php echo $url_descarga; ?>" class="btn btn-success">
                                                 descargar
@@ -481,36 +414,6 @@ include('../app/controllers/archivo/listado_archivos.php');
                             <!-- Fin del Modal Visor -->
                         <?php } ?>
 
-                        <?php if ($extension == 'mp3') { ?>
-                            <!-- Modal Audio -->
-                            <div class="modal fade" id="modal_visor<?php echo $id_archivo; ?>" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title text-truncate pr-4" id="exampleModalLabel"
-                                                style="max-width: 90%;">
-                                                <?php echo $nombre_archivo; ?>
-                                            </h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body" style="text-align: center">
-                                            <audio id="my-audio<?php echo $id_archivo; ?>" style="width: 100%;" height="500px"
-                                                controls>
-                                                <source src="<?php echo $url_archivo; ?>" type="audio/mpeg">
-                                            </audio>
-                                            <br><br>
-                                            <a href="<?php echo $url_descarga; ?>" class="btn btn-success">
-                                                descargar
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Fin del Modal Visor -->
-                        <?php } ?>
                     </td>
                     <td> <?php echo $archivos_dato['created_at']; ?></td>
                     <!-- Boton para eliminar archivos -->
@@ -526,53 +429,6 @@ include('../app/controllers/archivo/listado_archivos.php');
                             </form>
                             <!-- Fin del boton -->
 
-                            <!-- Boton para compartir archivos -->
-                            <button class="btn btn-success btn-sm" data-toggle="modal"
-                                data-target="#modal_compartir<?php echo $id_archivo; ?>"><i
-                                    class="bi bi-share-fill"></i></button>
-                            <!-- Modal -->
-                            <div class="modal fade" id="modal_compartir<?php echo $id_archivo; ?>" tabindex="-1"
-                                role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Compartir archivo</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-
-                                            <p style="overflow-wrap:anywhere;word-break:break-word;">
-                                                <?php echo $archivos_dato['nombre']; ?>
-                                            </p>
-                                            <?php if ($estado_archivo == 'privado') { ?>
-                                                <b> Este archivo es privado</b> <br>
-                                                <form action="../app/controllers/archivo/cambiar_estado.php" method="post">
-                                                    <input type="text" name="id" value="<?php echo $id_archivo; ?>" hidden>
-                                                    <input type="text" name="estado" value="publico" hidden>
-                                                    <button type="submit" class="btn btn-success">Cambiar a publico</button>
-                                                </form>
-                                            <?php } else { ?>
-                                                <b> Este archivo es publico</b> <br>
-                                                <form action="../app/controllers/archivo/cambiar_estado.php" method="post">
-                                                    <input type="text" name="id" value="<?php echo $id_archivo; ?>" hidden>
-                                                    <input type="text" name="estado" value="privado" hidden>
-                                                    <button type="submit" class="btn btn-primary">Cambiar a privado</button>
-                                                </form>
-                                                <hr>
-                                                <input type="text" class="form-control" id="link_<?php echo $id_archivo; ?>"
-                                                    value="<?php echo $url_compartir_descarga; ?>" readonly>
-                                                <br>
-                                                <button type="button" class="btn btn-outline-primary"
-                                                    onclick="copiarEnlace('link_<?php echo $id_archivo; ?>')">Copiar
-                                                    enlace</button>
-                                            <?php } ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Fin del boton -->
                         </div>
                     </td>
                 </tr>
@@ -602,22 +458,6 @@ include('../app/controllers/archivo/listado_archivos.php');
             }
         });
     });
-</script>
-
-<script>
-    function copiarEnlace(idInput) {
-        var input = document.getElementById(idInput);
-        input.select();
-        input.setSelectionRange(0, 99999);
-        document.execCommand('copy');
-        Swal.fire({
-            icon: 'success',
-            title: 'Enlace copiado',
-            text: 'Ya puedes compartirlo',
-            timer: 1500,
-            showConfirmButton: false
-        });
-    }
 </script>
 
 <script>
