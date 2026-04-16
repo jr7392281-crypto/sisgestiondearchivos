@@ -8,7 +8,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $id_archivo = isset($_POST['id']) ? (int) $_POST['id'] : 0;
-$estado = $_POST['estado'] ?? '';
+$estado = strtolower(trim((string) ($_POST['estado'] ?? '')));
+
+if ($estado === 'public') {
+    $estado = 'publico';
+}
+if ($estado === 'private') {
+    $estado = 'privado';
+}
 
 if ($id_archivo <= 0) {
     $_SESSION['mensaje'] = "Archivo invalido.";
@@ -17,7 +24,7 @@ if ($id_archivo <= 0) {
     exit();
 }
 
-if ($estado != 'privado' && $estado != 'publico') {
+if ($estado !== 'privado' && $estado !== 'publico') {
     $_SESSION['mensaje'] = "Estado invalido.";
     $_SESSION['icono'] = "error";
     header('Location:' . $URL . '/unidad');
@@ -43,9 +50,9 @@ if (!$archivo) {
     exit();
 }
 
-$id_carpeta = $archivo['id_carpeta'];
-$nombre = $archivo['nombre'];
-$ruta_actual = $archivo['ruta'] ?? '';
+$id_carpeta = (int) $archivo['id_carpeta'];
+$nombre = (string) $archivo['nombre'];
+$ruta_actual = (string) ($archivo['ruta'] ?? '');
 
 if ($ruta_actual === '') {
     $_SESSION['mensaje'] = "Ruta del archivo invalida.";
@@ -68,19 +75,36 @@ if ($estado === 'publico') {
     $directorio_nuevo = rtrim($PRIVATE_STORAGE, "/\\") . '/' . $id_usuario_sesion . '/' . $id_carpeta;
 }
 
-if (!is_dir($directorio_nuevo)) {
-    mkdir($directorio_nuevo, 0777, true);
+if (!is_dir($directorio_nuevo) && !mkdir($directorio_nuevo, 0777, true)) {
+    $_SESSION['mensaje'] = "No se pudo crear el directorio destino.";
+    $_SESSION['icono'] = "error";
+    header('Location:' . $URL . '/unidad/show.php?id=' . $id_carpeta);
+    exit();
 }
 
 $ruta_fisica_nueva = rtrim($directorio_nuevo, "/\\") . '/' . $nombre;
 
-if ($ruta_fisica_actual !== $ruta_fisica_nueva && is_file($ruta_fisica_actual)) {
+$movio_archivo = false;
+if ($ruta_fisica_actual !== $ruta_fisica_nueva) {
+    if (!is_file($ruta_fisica_actual)) {
+        $_SESSION['mensaje'] = "No se encontro el archivo origen para cambiar el estado.";
+        $_SESSION['icono'] = "error";
+        header('Location:' . $URL . '/unidad/show.php?id=' . $id_carpeta);
+        exit();
+    }
+    if (is_file($ruta_fisica_nueva)) {
+        $_SESSION['mensaje'] = "Ya existe un archivo con el mismo nombre en el destino.";
+        $_SESSION['icono'] = "error";
+        header('Location:' . $URL . '/unidad/show.php?id=' . $id_carpeta);
+        exit();
+    }
     if (!rename($ruta_fisica_actual, $ruta_fisica_nueva)) {
         $_SESSION['mensaje'] = "No se pudo mover el archivo al nuevo estado.";
         $_SESSION['icono'] = "error";
         header('Location:' . $URL . '/unidad/show.php?id=' . $id_carpeta);
         exit();
     }
+    $movio_archivo = true;
 }
 
 $update = $pdo->prepare("UPDATE tb_archivos
@@ -97,6 +121,10 @@ if ($update->execute()) {
     $_SESSION['mensaje'] = "Estado del archivo actualizado.";
     $_SESSION['icono'] = "success";
 } else {
+    // Si falla BD, intentamos volver el archivo a su ruta original.
+    if ($movio_archivo && is_file($ruta_fisica_nueva) && !is_file($ruta_fisica_actual)) {
+        @rename($ruta_fisica_nueva, $ruta_fisica_actual);
+    }
     $_SESSION['mensaje'] = "No se pudo actualizar el estado.";
     $_SESSION['icono'] = "error";
 }

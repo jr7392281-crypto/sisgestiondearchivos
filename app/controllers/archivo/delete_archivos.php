@@ -4,6 +4,7 @@ include('../../../layout/sesion.php');
 
 $id_archivo = $_POST['id'];
 
+// Verifica que el archivo pertenezca al usuario.
 $sql = "SELECT ar.id_carpeta, ar.ruta
         FROM tb_archivos ar
         INNER JOIN tb_carpetas ca ON ca.id_carpeta = ar.id_carpeta

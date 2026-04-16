@@ -98,9 +98,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-                        <!-- Mostrar opciones de Usuarios y Roles solo para Administrador -->
                         <?php if (isset($_SESSION['id_rol']) && $_SESSION['id_rol'] == 1) { ?>
-                            <!--Usuarios -->
                             <li class="nav-item">
                                 <a href="#" class="nav-link active">
                                     <i class="nav-icon fas fa-users"></i>

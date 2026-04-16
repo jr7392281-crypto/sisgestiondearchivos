@@ -1,6 +1,7 @@
 <?php
 $carpeta_padre_id = $_GET['id'];
 
+// Lista solo subcarpetas del usuario logueado.
 $sql_subcarpetas = "SELECT * FROM tb_carpetas 
                     WHERE carpeta_padre_id = :carpeta_padre_id
                     AND id_usuario = :id_usuario";

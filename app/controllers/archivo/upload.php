@@ -6,6 +6,7 @@ $id_carpeta = isset($_POST['id_carpeta']) ? $_POST['id_carpeta'] : '';
 $estado_archivo = 'privado';
 $max_archivos_usuario = 2000;
 
+// Valida carpeta recibida.
 if ($id_carpeta === '' || !ctype_digit($id_carpeta) || $id_carpeta == '0') {
     $_SESSION['mensaje'] = "Carpeta invalida.";
     $_SESSION['icono'] = "error";
@@ -13,6 +14,7 @@ if ($id_carpeta === '' || !ctype_digit($id_carpeta) || $id_carpeta == '0') {
     exit();
 }
 
+// Verifica que la carpeta pertenezca al usuario.
 $consulta = $pdo->prepare("SELECT id_carpeta
                            FROM tb_carpetas
                            WHERE id_carpeta = :id_carpeta
@@ -30,6 +32,7 @@ if (!$consulta->fetch(PDO::FETCH_ASSOC)) {
     exit();
 }
 
+// Limite de archivos por usuario.
 $sql_total_usuario = "SELECT COUNT(*)
                       FROM tb_archivos ar
                       INNER JOIN tb_carpetas ca ON ca.id_carpeta = ar.id_carpeta
@@ -52,7 +55,7 @@ if (!isset($_FILES['archivo']) || $_FILES['archivo']['name'] === '') {
     exit();
 }
 
-$permitidos = ['jpg', 'jpeg', 'png', 'pdf', 'docx', 'mp4'];
+$permitidos = ['jpg', 'jpeg', 'png', 'webp', 'pdf', 'docx', 'xlsx', 'pptx', 'mp4', 'mp3'];
 $max_bytes = 50 * 1024 * 1024;
 
 $nombre_original = basename($_FILES['archivo']['name']);

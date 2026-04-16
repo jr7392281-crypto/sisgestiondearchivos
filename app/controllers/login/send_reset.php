@@ -61,6 +61,39 @@ try {
 }
 
 // Redirigimos al formulario de nueva contrasena con el token
+/*
+Si quieres enviar el enlace por Gmail (opcional), puedes usar PHPMailer.
+Dejo el bloque completo comentado para activarlo cuando lo decidas.
+
+PASOS:
+1) Instalar PHPMailer (composer require phpmailer/phpmailer)
+2) Activar verificacion en dos pasos en Gmail y crear App Password
+3) Completar usuario y password de la app
+
+// require '../../vendor/autoload.php';
+// use PHPMailer\PHPMailer\PHPMailer;
+// use PHPMailer\PHPMailer\Exception;
+//
+// $link = $URL . '/login/reset_password.php?token=' . urlencode($token);
+//
+// $mail = new PHPMailer(true);
+// $mail->isSMTP();
+// $mail->Host = 'smtp.gmail.com';
+// $mail->SMTPAuth = true;
+// $mail->Username = 'tu_correo@gmail.com';
+// $mail->Password = 'TU_APP_PASSWORD';
+// $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+// $mail->Port = 587;
+//
+// $mail->setFrom('tu_correo@gmail.com', 'Sistema');
+// $mail->addAddress($email);
+//
+// $mail->isHTML(true);
+// $mail->Subject = 'Recuperar contrasena';
+// $mail->Body = 'Tu enlace: <a href="' . $link . '">Recuperar</a>';
+//
+// $mail->send();
+*/
 header('Location:' . $URL . '/login/reset_password.php?token=' . urlencode($token));
 exit();
 ?>

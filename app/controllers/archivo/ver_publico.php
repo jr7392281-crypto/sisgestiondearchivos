@@ -9,7 +9,7 @@ if ($id_archivo === '' || !ctype_digit($id_archivo) || $id_archivo == '0') {
     exit('Archivo invalido');
 }
 
-$sql = "SELECT id_archivos, nombre, tipo, ruta, id_carpeta
+$sql = "SELECT id_archivos, nombre, tipo, ruta
         FROM tb_archivos
         WHERE id_archivos = :id_archivo
           AND estado_archivo = 'publico'
@@ -20,8 +20,8 @@ $query->execute();
 $archivo = $query->fetch(PDO::FETCH_ASSOC);
 
 if (!$archivo) {
-    http_response_code(403);
-    exit('Archivo privado o no existe');
+    http_response_code(404);
+    exit('Archivo no disponible');
 }
 
 $ruta = $archivo['ruta'] ?? '';
@@ -30,12 +30,13 @@ if ($ruta === '') {
     exit('No existe el archivo');
 }
 
-if (strpos($ruta, 'private/') === 0) {
-    $ruta_fisica = rtrim($PRIVATE_STORAGE, "/\\") . '/' . substr($ruta, 8);
-} else {
-    $ruta_fisica = '../../../' . ltrim($ruta, '/');
+$ruta = ltrim($ruta, '/');
+if (strpos($ruta, 'storage/public/') !== 0 || strpos($ruta, '..') !== false) {
+    http_response_code(404);
+    exit('Ruta no valida');
 }
 
+$ruta_fisica = rtrim(dirname(__DIR__, 3), "/\\") . '/' . $ruta;
 if (!is_file($ruta_fisica)) {
     http_response_code(404);
     exit('No existe el archivo');
@@ -49,6 +50,9 @@ if ($tipo === 'webp') $mime = 'image/webp';
 if ($tipo === 'pdf') $mime = 'application/pdf';
 if ($tipo === 'mp4') $mime = 'video/mp4';
 if ($tipo === 'mp3') $mime = 'audio/mpeg';
+if ($tipo === 'docx') $mime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+if ($tipo === 'xlsx') $mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+if ($tipo === 'pptx') $mime = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
 
 header('Content-Type: ' . $mime);
 header('Content-Length: ' . filesize($ruta_fisica));
@@ -57,6 +61,7 @@ if ($descargar == '1') {
 } else {
     header('Content-Disposition: inline; filename="' . basename($archivo['nombre']) . '"');
 }
+header('X-Content-Type-Options: nosniff');
 
 readfile($ruta_fisica);
 exit();

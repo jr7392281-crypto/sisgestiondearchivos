@@ -1,8 +1,10 @@
 <?php
+// Inicia sesion para obtener el usuario logueado.
 session_start();
 if (isset($_SESSION['sesion_email'])) {
     $email_sesion = $_SESSION['sesion_email'];
 
+    // Trae el usuario y su rol usando el email de la sesion.
     $sql = "SELECT us.id_usuario as id_usuario, us.nombre as nombre, us.email as email, us.id_rol as id_rol, rol.rol as rol
     FROM tb_users as us INNER JOIN tb_roles as rol ON us.id_rol = rol.id_rol WHERE email = :email";
     $query = $pdo->prepare($sql);
@@ -11,6 +13,7 @@ if (isset($_SESSION['sesion_email'])) {
     $usuarios = $query->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($usuarios as $usuario) {
+        // Guardamos datos clave del usuario para permisos y vistas.
         $id_usuario_sesion = $usuario['id_usuario'];
         $nombres_sesion = $usuario['nombre'];
         $rol_sesion = $usuario['rol'];
@@ -21,6 +24,7 @@ if (isset($_SESSION['sesion_email'])) {
     function proteger_admin()
     {
         global $URL;
+        // Bloquea rutas solo admin.
         if (!isset($_SESSION['id_rol']) || $_SESSION['id_rol'] != 1) {
             $_SESSION['mensaje'] = "Acceso denegado: se requieren permisos de administrador";
             header('location:' . $URL . '/index.php');
@@ -28,6 +32,7 @@ if (isset($_SESSION['sesion_email'])) {
         }
     }
 } else {
+    // Si no hay sesion, envia al login.
     header('location:' . $URL . '/login');
     exit();
 }

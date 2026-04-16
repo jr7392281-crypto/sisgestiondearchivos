@@ -1,6 +1,7 @@
 <?php
 $id_carpeta = $_GET['id'];
 
+// Solo permite ver carpetas que pertenecen al usuario en sesion.
 $sql_carpetas = "SELECT * FROM tb_carpetas 
                  WHERE id_carpeta = :id_carpeta 
                  AND id_usuario = :id_usuario";
@@ -12,7 +13,7 @@ $query_carpetas->execute();
 
 $carpeta_datos = $query_carpetas->fetch(PDO::FETCH_ASSOC);
 
-// Si no es su carpeta, redirige
+// Si no es su carpeta, redirige.
 if (!$carpeta_datos) {
     $_SESSION['mensaje'] = "No tienes permiso para ver esta carpeta";
     $_SESSION['icono'] = "error";
