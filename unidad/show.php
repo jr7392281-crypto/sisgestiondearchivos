@@ -265,6 +265,8 @@ include('../app/controllers/archivo/listado_archivos.php');
                     $nombre_archivo = $archivos_dato['nombre'];
                     $url_archivo = $URL . '/app/controllers/archivo/ver_archivo.php?id=' . $id_archivo;
                     $url_descarga = $url_archivo . '&descargar=1';
+                    $url_compartir = $URL . '/app/controllers/archivo/ver_publico.php?id=' . $id_archivo;
+                    $url_compartir_descarga = $url_compartir . '&descargar=1';
                     $estado_actual = (isset($archivos_dato['estado_archivo']) && $archivos_dato['estado_archivo'] === 'publico')
                         ? 'publico'
                         : 'privado';
@@ -559,12 +561,13 @@ include('../app/controllers/archivo/listado_archivos.php');
                                                             privado</button>
                                                     </form>
                                                     <hr>
-                                                <input type="text" class="form-control" id="link_<?php echo $id_archivo; ?>"
-                                                    value="<?php echo $url_compartir_descarga; ?>" readonly>
-                                                <br>
-                                                <button type="button" class="btn btn-outline-primary"
-                                                    onclick="copiarEnlace('link_<?php echo $id_archivo; ?>')">Copiar
-                                                    enlace</button>
+                                                    <input type="text" class="form-control"
+                                                        id="link_<?php echo $id_archivo; ?>"
+                                                        value="<?php echo $url_compartir_descarga; ?>" readonly>
+                                                    <br>
+                                                    <button type="button" class="btn btn-outline-primary"
+                                                        onclick="copiarEnlace('link_<?php echo $id_archivo; ?>')">Copiar
+                                                        enlace</button>
                                                 <?php } ?>
                                             </div>
                                         </div>
@@ -633,6 +636,17 @@ include('../app/controllers/archivo/listado_archivos.php');
             }
         });
     });
+</script>
+
+<script>
+    function copiarEnlace(idInput) {
+        var input = document.getElementById(idInput);
+        if (!input) return;
+
+        input.select();
+        input.setSelectionRange(0, 99999);
+        document.execCommand('copy');
+    }
 </script>
 <?php
 include('../layout/mensajes.php');
