@@ -43,15 +43,15 @@ include('../app/controllers/usuarios/show_usuario.php');
                   
                     <div class="form-group">
                       <label for="">Nombres</label>
-                      <input type="text" name="nombre" class="form-control" value="<?php echo $nombres; ?>" disabled>
+                      <input type="text" name="nombre" class="form-control" value="<?php echo e($nombres); ?>" disabled>
                     </div>
                     <div class="form-group">
                       <label for="">Email</label>
-                      <input type="email" name="email" class="form-control" value="<?php echo $email; ?>" disabled>
+                      <input type="email" name="email" class="form-control" value="<?php echo e($email); ?>" disabled>
                     </div>
                     <div class="form-group">
                       <label for="">Rol del usuario</label>
-                      <input type="text" name="email" class="form-control" value="<?php echo $rol; ?>" disabled>
+                      <input type="text" name="email" class="form-control" value="<?php echo e($rol); ?>" disabled>
                     </div>
                     <hr>
                     <div class="form-group">

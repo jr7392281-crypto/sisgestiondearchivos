@@ -1,5 +1,6 @@
 <?php
 include('../../config.php');
+require_once('../../helpers/email.php');
 session_start();
 
 // Este controlador solo debe recibir datos por POST
@@ -9,11 +10,18 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Recibimos el email del formulario
-$email = isset($_POST['email']) ? trim($_POST['email']) : '';
+$email = isset($_POST['email']) ? strtolower(trim($_POST['email'])) : '';
 
 // Validamos que no llegue vacio
 if ($email === '') {
     $_SESSION['mensaje'] = "Debes ingresar un email.";
+    $_SESSION['icono'] = "error";
+    header('Location:' . $URL . '/login/forgot_password.php');
+    exit();
+}
+
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $_SESSION['mensaje'] = "Debes ingresar un email valido.";
     $_SESSION['icono'] = "error";
     header('Location:' . $URL . '/login/forgot_password.php');
     exit();
@@ -60,40 +68,25 @@ try {
     exit();
 }
 
-// Redirigimos al formulario de nueva contrasena con el token
-/*
-Si quieres enviar el enlace por Gmail (opcional), puedes usar PHPMailer.
-Dejo el bloque completo comentado para activarlo cuando lo decidas.
+$link = $URL . '/login/reset_password.php?token=' . urlencode($token);
+$link_seguro = htmlspecialchars($link, ENT_QUOTES, 'UTF-8');
+$asunto = 'Recuperar contrasena';
+$cuerpo = '<p>Hola.</p>'
+    . '<p>Recibimos una solicitud para restablecer la contrasena de tu cuenta.</p>'
+    . '<p><a href="' . $link_seguro . '">Haz clic aqui para restablecer tu contrasena</a></p>'
+    . '<p>Si no solicitaste este cambio, puedes ignorar este correo.</p>'
+    . '<p>Este enlace vence en 30 minutos.</p>';
 
-PASOS:
-1) Instalar PHPMailer (composer require phpmailer/phpmailer)
-2) Activar verificacion en dos pasos en Gmail y crear App Password
-3) Completar usuario y password de la app
+$error_envio = '';
+$ruta_debug = '';
+$enviado = enviar_correo_o_guardar_debug($email, $asunto, $cuerpo, $MAIL_DEBUG_PATH, $error_envio, $ruta_debug);
 
-// require '../../vendor/autoload.php';
-// use PHPMailer\PHPMailer\PHPMailer;
-// use PHPMailer\PHPMailer\Exception;
-//
-// $link = $URL . '/login/reset_password.php?token=' . urlencode($token);
-//
-// $mail = new PHPMailer(true);
-// $mail->isSMTP();
-// $mail->Host = 'smtp.gmail.com';
-// $mail->SMTPAuth = true;
-// $mail->Username = 'tu_correo@gmail.com';
-// $mail->Password = 'TU_APP_PASSWORD';
-// $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-// $mail->Port = 587;
-//
-// $mail->setFrom('tu_correo@gmail.com', 'Sistema');
-// $mail->addAddress($email);
-//
-// $mail->isHTML(true);
-// $mail->Subject = 'Recuperar contrasena';
-// $mail->Body = 'Tu enlace: <a href="' . $link . '">Recuperar</a>';
-//
-// $mail->send();
-*/
-header('Location:' . $URL . '/login/reset_password.php?token=' . urlencode($token));
+if (!$enviado) {
+    error_log('No se pudo enviar ni guardar el correo de recuperacion a ' . $email . ': ' . $error_envio);
+}
+
+$_SESSION['mensaje'] = "Si el email existe, recibira un enlace de recuperacion.";
+$_SESSION['icono'] = "success";
+header('Location:' . $URL . '/login/forgot_password.php');
 exit();
 ?>

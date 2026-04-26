@@ -43,14 +43,14 @@ include('../app/controllers/roles/listado_de_roles.php');
                                 <div class="col-md-12">
 
                                     <form action="../app/controllers/usuarios/update.php" method="post">
-                                        <input type="text" name="id_usuario" value="<?php echo $id_usuario_get; ?>" hidden>
+                                        <input type="text" name="id_usuario" value="<?php echo (int) $id_usuario_get; ?>" hidden>
                                         <div class="form-group">
                                             <label for="">Nombres</label>
-                                            <input type="text" name="nombre" class="form-control" value="<?php echo $nombres; ?>" placeholder="Escriba aqui el nombre del nuevo usuario" required>
+                                            <input type="text" name="nombre" class="form-control" value="<?php echo e($nombres); ?>" placeholder="Escriba aqui el nombre del nuevo usuario" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="">Email</label>
-                                            <input type="email" name="email" class="form-control" value="<?php echo $email; ?>" placeholder="Escriba aqui el correo del nuevo usuario" required>
+                                            <input type="email" name="email" class="form-control" value="<?php echo e($email); ?>" placeholder="Escriba aqui el correo del nuevo usuario" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="">Rol del usuario</label>
@@ -59,8 +59,8 @@ include('../app/controllers/roles/listado_de_roles.php');
                                                 foreach ($roles_datos as $roles_dato) {
                                                     $rol_tabla = $roles_dato['rol'];
                                                     $id_rol = $roles_dato['id_rol']; ?>
-                                                    <option value="<?php echo $id_rol; ?>" <?php if ($rol_tabla == $rol) { ?> selected="selected" <?php } ?>>
-                                                        <?php echo $rol_tabla; ?></option>
+                                                    <option value="<?php echo (int) $id_rol; ?>" <?php if ($rol_tabla == $rol) { ?> selected="selected" <?php } ?>>
+                                                        <?php echo e($rol_tabla); ?></option>
                                                 <?php
                                                 }
                                                 ?>

@@ -69,15 +69,15 @@ include_once('../app/helpers/permisos.php');
                     <tr>
                       <td>
                         <center><?php echo $contador = $contador + 1; ?></center></td>
-                      <td><?php echo $usuarios_dato['nombre']; ?></td>
-                      <td><?php echo $usuarios_dato['email']; ?></td>
-                      <td><center><?php echo $usuarios_dato['rol']; ?></center></td>
+                      <td><?php echo e($usuarios_dato['nombre']); ?></td>
+                      <td><?php echo e($usuarios_dato['email']); ?></td>
+                      <td><center><?php echo e($usuarios_dato['rol']); ?></center></td>
                       <td>
                         <center>
                           <div class="btn-group">
-                            <a href="show.php?id=<?php echo $id_usuario;?>" type="button" class="btn btn-primary"><i class="fa fa-eye"></i> Ver</a>
-                            <a href="update.php?id=<?php echo $id_usuario;?>" type="button" class="btn btn-success"><i class="fa fa-pencil-alt"></i> Editar</a>
-                            <a href="delete.php?id=<?php echo $id_usuario;?>" type="button" class="btn btn-danger"><i class="fa fa-trash"></i> Borrar</a>
+                            <a href="show.php?id=<?php echo (int) $id_usuario; ?>" type="button" class="btn btn-primary"><i class="fa fa-eye"></i> Ver</a>
+                            <a href="update.php?id=<?php echo (int) $id_usuario; ?>" type="button" class="btn btn-success"><i class="fa fa-pencil-alt"></i> Editar</a>
+                            <a href="delete.php?id=<?php echo (int) $id_usuario; ?>" type="button" class="btn btn-danger"><i class="fa fa-trash"></i> Borrar</a>
                           </div>
                         </center>
                       </td>
