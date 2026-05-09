@@ -1,9 +1,31 @@
 <?php
 // ===== CARGAR .ENV =====
-$envPath = dirname(__DIR__) . '/.env';
-$env = file_exists($envPath) ? parse_ini_file($envPath) : [];
+$projectRoot = dirname(__DIR__);
+$env = [];
+$envCandidates = [];
 
-function envv($key, $default = null) {
+$appEnvPath = getenv('APP_ENV_PATH');
+if (is_string($appEnvPath) && trim($appEnvPath) !== '') {
+    $envCandidates[] = trim($appEnvPath);
+}
+
+$envCandidates[] = dirname(__DIR__, 3) . '/sistemagestion_private/.env';
+$envCandidates[] = $projectRoot . '/.env';
+
+foreach ($envCandidates as $candidate) {
+    if (!is_string($candidate) || trim($candidate) === '' || !file_exists($candidate)) {
+        continue;
+    }
+
+    $parsedEnv = parse_ini_file($candidate, false, INI_SCANNER_RAW);
+    if (is_array($parsedEnv)) {
+        $env = $parsedEnv;
+        break;
+    }
+}
+
+function envv($key, $default = null)
+{
     global $env;
     return $env[$key] ?? $default;
 }
@@ -25,8 +47,9 @@ try {
 // ===== URL DESDE .ENV =====
 $URL = envv('APP_URL', "http://localhost/sistemagestion");
 
-$PRIVATE_STORAGE = dirname(__DIR__) . "/storage/private";
-$MAIL_DEBUG_PATH = dirname(__DIR__) . "/storage/mail_outbox";
+// Rutas sensibles: si luego quieres sacarlas de htdocs, solo define estas claves en .env.
+$PRIVATE_STORAGE = envv('PRIVATE_STORAGE_PATH', $projectRoot . "/storage/private");
+$MAIL_DEBUG_PATH = envv('MAIL_DEBUG_PATH', $projectRoot . "/storage/mail_outbox");
 
 // ===== SMTP DESDE .ENV =====
 define('SMTP_HOST', envv('SMTP_HOST', 'smtp.gmail.com'));
