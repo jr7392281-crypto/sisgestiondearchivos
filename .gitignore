@@ -1,5 +1,8 @@
 .env
 /storage/mail_outbox/*.html
 /storage/private/*
+/storage/public/*
 !/storage/private/.htaccess
 !/storage/private/.gitkeep
+!/storage/public/.htaccess
+!/storage/public/.gitkeep

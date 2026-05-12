@@ -1,20 +1,14 @@
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sistema Gestion</title>
 
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../public/templates/AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css">
-
-    <link rel="stylesheet"
-        href="../public/templates/AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-
+    <link rel="stylesheet" href="../public/templates/AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <link rel="stylesheet" href="../public/templates/AdminLTE-3.2.0/dist/css/adminlte.min.css?v=3.2.0">
-    <!-- Librería SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -24,12 +18,13 @@
         session_start();
         if (isset($_SESSION['mensaje'])) {
             $respuesta = $_SESSION['mensaje'];
-            $icono = isset($_SESSION['icono']) ? $_SESSION['icono'] : 'error'; ?>
+            $icono = isset($_SESSION['icono']) ? $_SESSION['icono'] : 'error';
+            ?>
             <script>
                 Swal.fire({
                     position: "top-end",
                     icon: "<?php echo $icono; ?>",
-                    title: ' <?php echo $respuesta ?>',
+                    title: <?php echo json_encode($respuesta); ?>,
                     showConfirmButton: false,
                     timer: 1500
                 });
@@ -40,15 +35,15 @@
         }
         ?>
         <center>
-            <img src="../public/images/logo.png" alt="" width="200px">
+            <img src="../public/images/logo.png" alt="Logo" width="200">
         </center>
         <br>
         <div class="card-body login-card-body">
-            <p class="login-box-msg">Ingrese sus Datos</p>
+            <p class="login-box-msg">Ingrese sus datos</p>
 
             <form action="../app/controllers/login/ingreso.php" method="post">
                 <div class="input-group mb-3">
-                    <input type="email" name="email" class="form-control" placeholder="Email">
+                    <input type="email" name="email" class="form-control" placeholder="Email" required>
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-envelope"></span>
@@ -56,11 +51,9 @@
                     </div>
                 </div>
                 <div class="input-group mb-3">
-                    <input type="password" id="password_user" name="password_user" class="form-control"
-                        placeholder="Password">
+                    <input type="password" id="password_user" name="password_user" class="form-control" placeholder="Password" required>
                     <div class="input-group-append">
-                        <div class="input-group-text text-muted" style="cursor:pointer;background:#fff;"
-                            onclick="togglePasswordLogin()">
+                        <div class="input-group-text text-muted" style="cursor:pointer;background:#fff;" onclick="togglePasswordLogin()">
                             <span id="icono_password" class="fas fa-eye"></span>
                         </div>
                     </div>
@@ -76,7 +69,6 @@
                 </div>
             </form>
         </div>
-
     </div>
 
     <script src="../public/templates/AdminLTE-3.2.0/plugins/jquery/jquery.min.js"></script>

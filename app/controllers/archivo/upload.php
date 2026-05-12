@@ -56,6 +56,18 @@ if (!isset($_FILES['archivo']) || $_FILES['archivo']['name'] === '') {
 }
 
 $permitidos = ['jpg', 'jpeg', 'png', 'webp', 'pdf', 'docx', 'xlsx', 'pptx', 'mp4', 'mp3'];
+$mime_permitidos = [
+    'jpg' => ['image/jpeg'],
+    'jpeg' => ['image/jpeg'],
+    'png' => ['image/png'],
+    'webp' => ['image/webp'],
+    'pdf' => ['application/pdf'],
+    'docx' => ['application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+    'xlsx' => ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+    'pptx' => ['application/vnd.openxmlformats-officedocument.presentationml.presentation'],
+    'mp4' => ['video/mp4'],
+    'mp3' => ['audio/mpeg', 'audio/mp3'],
+];
 $max_bytes = 50 * 1024 * 1024;
 
 $nombre_original = basename($_FILES['archivo']['name']);
@@ -78,6 +90,22 @@ if (!in_array($extension, $permitidos, true)) {
     exit();
 }
 
+$mime_detectado = '';
+if (function_exists('finfo_open')) {
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    if ($finfo) {
+        $mime_detectado = finfo_file($finfo, $tmp_archivo) ?: '';
+        finfo_close($finfo);
+    }
+}
+
+if ($mime_detectado !== '' && isset($mime_permitidos[$extension]) && !in_array($mime_detectado, $mime_permitidos[$extension], true)) {
+    $_SESSION['mensaje'] = "El contenido del archivo no coincide con la extension enviada.";
+    $_SESSION['icono'] = "error";
+    header('Location:' . $URL . '/unidad/show.php?id=' . $id_carpeta);
+    exit();
+}
+
 if ($tamano_archivo <= 0 || $tamano_archivo > $max_bytes) {
     $_SESSION['mensaje'] = "El archivo supera el tamano maximo permitido (50 MB).";
     $_SESSION['icono'] = "error";
@@ -85,7 +113,12 @@ if ($tamano_archivo <= 0 || $tamano_archivo > $max_bytes) {
     exit();
 }
 
-$nombre_archivo = date('YmdHis') . '__' . $nombre_original;
+$nombre_base = preg_replace('/[^a-zA-Z0-9._ -]/', '_', pathinfo($nombre_original, PATHINFO_FILENAME));
+$nombre_base = trim($nombre_base);
+if ($nombre_base === '') {
+    $nombre_base = 'archivo';
+}
+$nombre_archivo = date('YmdHis') . '__' . $nombre_base . '.' . $extension;
 $ruta_db = "private/" . $id_usuario_sesion . "/" . $id_carpeta . "/" . $nombre_archivo;
 $directorio_destino = rtrim($PRIVATE_STORAGE, "/\\") . "/" . $id_usuario_sesion . "/" . $id_carpeta . "/";
 

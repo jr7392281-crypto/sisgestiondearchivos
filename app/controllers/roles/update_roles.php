@@ -1,19 +1,25 @@
 <?php
-// Se obtiene el ID del rol desde la URL (por método GET)
-$id_rol_get = $_GET['id'];
+$id_rol_get = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
-// Se prepara la consulta SQL para obtener los datos del rol con ese ID
-$sql_roles = "SELECT * FROM tb_roles WHERE id_rol = '$id_rol_get'";
-$query_roles = $pdo->prepare($sql_roles);
-
-// Se ejecuta la consulta
-$query_roles->execute();
-
-// Se obtienen los resultados como array asociativo
-$roles_datos = $query_roles->fetchAll(PDO::FETCH_ASSOC);
-
-// Se recorre el resultado (aunque solo debería haber un registro)
-foreach($roles_datos as $roles_dato){
-    $rol = $roles_dato['rol']; // Se guarda el nombre del rol en una variable
+if ($id_rol_get <= 0) {
+    $_SESSION['mensaje'] = "Rol invalido.";
+    $_SESSION['icono'] = "error";
+    header('Location:' . $URL . '/roles/');
+    exit();
 }
+
+$sql_roles = "SELECT id_rol, rol FROM tb_roles WHERE id_rol = :id_rol LIMIT 1";
+$query_roles = $pdo->prepare($sql_roles);
+$query_roles->bindParam(':id_rol', $id_rol_get, PDO::PARAM_INT);
+$query_roles->execute();
+$roles_dato = $query_roles->fetch(PDO::FETCH_ASSOC);
+
+if (!$roles_dato) {
+    $_SESSION['mensaje'] = "El rol no existe.";
+    $_SESSION['icono'] = "error";
+    header('Location:' . $URL . '/roles/');
+    exit();
+}
+
+$rol = $roles_dato['rol'];
 ?>

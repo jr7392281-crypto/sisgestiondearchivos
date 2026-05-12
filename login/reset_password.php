@@ -1,12 +1,11 @@
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sistema Gestion</title>
 
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../public/templates/AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../public/templates/AdminLTE-3.2.0/dist/css/adminlte.min.css?v=3.2.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -19,19 +18,20 @@
         $token = isset($_GET['token']) ? trim($_GET['token']) : '';
 
         if ($token === '') {
-            $_SESSION['mensaje'] = "Enlace invalido.";
+            $_SESSION['mensaje'] = "Enlace inválido.";
             header('Location: index.php');
             exit();
         }
 
         if (isset($_SESSION['mensaje'])) {
             $respuesta = $_SESSION['mensaje'];
-            $icono = isset($_SESSION['icono']) ? $_SESSION['icono'] : 'error'; ?>
+            $icono = isset($_SESSION['icono']) ? $_SESSION['icono'] : 'error';
+            ?>
             <script>
                 Swal.fire({
                     position: "top-end",
                     icon: "<?php echo $icono; ?>",
-                    title: ' <?php echo $respuesta ?>',
+                    title: <?php echo json_encode($respuesta); ?>,
                     showConfirmButton: false,
                     timer: 1800
                 });
@@ -43,38 +43,34 @@
         ?>
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
-                <b>Restablecer contrasena</b>
+                <b>Restablecer contraseña</b>
             </div>
 
             <div class="card-body">
-                <p class="login-box-msg">Ingresa tu nueva contrasena</p>
+                <p class="login-box-msg">Ingresa tu nueva contraseña</p>
 
                 <form action="../app/controllers/login/update_password.php" method="post">
                     <input type="hidden" name="token" value="<?php echo htmlspecialchars($token, ENT_QUOTES, 'UTF-8'); ?>">
 
                     <div class="input-group mb-3">
-                        <input type="password" id="password_user" name="password_user" class="form-control" placeholder="Nueva contrasena"
-                            required minlength="6">
+                        <input type="password" id="password_user" name="password_user" class="form-control" placeholder="Nueva contraseña" required minlength="6">
                         <div class="input-group-append">
-                            <div class="input-group-text text-muted" style="cursor:pointer;background:#fff;"
-                                onclick="togglePasswordReset('password_user', 'icono_password_user')">
+                            <div class="input-group-text text-muted" style="cursor:pointer;background:#fff;" onclick="togglePasswordReset('password_user', 'icono_password_user')">
                                 <span id="icono_password_user" class="fas fa-eye"></span>
                             </div>
                         </div>
                     </div>
 
                     <div class="input-group mb-3">
-                        <input type="password" id="password_confirm" name="password_confirm" class="form-control"
-                            placeholder="Confirmar contrasena" required minlength="6">
+                        <input type="password" id="password_confirm" name="password_confirm" class="form-control" placeholder="Confirmar contraseña" required minlength="6">
                         <div class="input-group-append">
-                            <div class="input-group-text text-muted" style="cursor:pointer;background:#fff;"
-                                onclick="togglePasswordReset('password_confirm', 'icono_password_confirm')">
+                            <div class="input-group-text text-muted" style="cursor:pointer;background:#fff;" onclick="togglePasswordReset('password_confirm', 'icono_password_confirm')">
                                 <span id="icono_password_confirm" class="fas fa-eye"></span>
                             </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-block">Actualizar contrasena</button>
+                    <button type="submit" class="btn btn-primary btn-block">Actualizar contraseña</button>
                 </form>
 
                 <hr>

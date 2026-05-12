@@ -1,20 +1,14 @@
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sistema Gestion</title>
 
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../public/templates/AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css">
-
-    <link rel="stylesheet"
-        href="../public/templates/AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-
+    <link rel="stylesheet" href="../public/templates/AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <link rel="stylesheet" href="../public/templates/AdminLTE-3.2.0/dist/css/adminlte.min.css?v=3.2.0">
-    <!-- Librería SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -24,12 +18,13 @@
         session_start();
         if (isset($_SESSION['mensaje'])) {
             $respuesta = $_SESSION['mensaje'];
-            $icono = isset($_SESSION['icono']) ? $_SESSION['icono'] : 'error'; ?>
+            $icono = isset($_SESSION['icono']) ? $_SESSION['icono'] : 'error';
+            ?>
             <script>
                 Swal.fire({
                     position: "top-end",
                     icon: "<?php echo $icono; ?>",
-                    title: ' <?php echo $respuesta ?>',
+                    title: <?php echo json_encode($respuesta); ?>,
                     showConfirmButton: false,
                     timer: 1500
                 });
@@ -46,9 +41,7 @@
             </div>
 
             <div class="card-body">
-                <p class="login-box-msg">
-                    Ingresa tu email y te enviaremos un enlace
-                </p>
+                <p class="login-box-msg">Ingresa tu email y te enviaremos un enlace</p>
 
                 <form action="../app/controllers/login/send_reset.php" method="post">
                     <div class="input-group mb-3">
@@ -60,9 +53,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-block">
-                        Enviar enlace
-                    </button>
+                    <button type="submit" class="btn btn-primary btn-block">Enviar enlace</button>
                 </form>
 
                 <hr>
