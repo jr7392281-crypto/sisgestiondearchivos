@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 31-05-2026 a las 01:07:04
+-- Tiempo de generación: 04-06-2026 a las 00:12:11
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -39,17 +39,6 @@ CREATE TABLE `tb_archivos` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Volcado de datos para la tabla `tb_archivos`
---
-
-INSERT INTO `tb_archivos` (`id_archivos`, `nombre`, `estado_archivo`, `id_carpeta`, `tipo`, `tamaño`, `ruta`, `created_at`, `updated_at`) VALUES
-(23, '20260512135934__picnic-extraterrestre-arkadis-y-boris-strugatski.pdf', 'publico', 10, 'pdf', 592856, 'storage/public/9/10/20260512135934__picnic-extraterrestre-arkadis-y-boris-strugatski.pdf', '2026-05-12 18:59:34', '2026-05-12 19:04:50'),
-(24, '20260512135934__New Project 2.pdf', 'privado', 10, 'pdf', 1595541, 'private/9/10/20260512135934__New Project 2.pdf', '2026-05-12 18:59:34', '2026-05-12 18:59:34'),
-(25, '20260512135935__New Project 1.pdf', 'privado', 10, 'pdf', 1433815, 'private/9/10/20260512135935__New Project 1.pdf', '2026-05-12 18:59:35', '2026-05-12 18:59:35'),
-(26, '20260512135935__Imprimir.pdf', 'privado', 10, 'pdf', 767879, 'private/9/10/20260512135935__Imprimir.pdf', '2026-05-12 18:59:35', '2026-05-12 18:59:35'),
-(27, '20260512152848__1 _1_.webp', 'privado', 10, 'webp', 30320, 'private/9/10/20260512152848__1 _1_.webp', '2026-05-12 20:28:48', '2026-05-12 20:28:48');
-
 -- --------------------------------------------------------
 
 --
@@ -66,22 +55,6 @@ CREATE TABLE `tb_carpetas` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Volcado de datos para la tabla `tb_carpetas`
---
-
-INSERT INTO `tb_carpetas` (`id_carpeta`, `nombre`, `color`, `carpeta_padre_id`, `id_usuario`, `created_at`, `updated_at`) VALUES
-(2, 'documentos de ingenieria', 'green', NULL, 3, '2026-04-06 16:02:40', '2026-04-06 16:02:40'),
-(3, 'cartas', NULL, 2, 3, '2026-04-06 17:39:35', '2026-04-06 17:39:35'),
-(4, 'documentos de excel', NULL, 3, 3, '2026-04-06 17:39:56', '2026-04-06 17:39:56'),
-(6, 'cartas', NULL, NULL, 3, '2026-04-24 16:51:41', '2026-04-24 16:51:41'),
-(7, 'documentos de excel', NULL, 2, 3, '2026-04-24 16:51:56', '2026-04-24 16:51:56'),
-(9, 'cartas', 'red', NULL, 9, '2026-05-12 18:51:25', '2026-05-12 18:51:30'),
-(10, 'documentos de ingenieria', 'yellow', NULL, 9, '2026-05-12 18:53:19', '2026-05-12 18:53:22'),
-(11, '456', NULL, NULL, 9, '2026-05-12 18:53:36', '2026-05-14 02:21:39'),
-(12, '45', 'green', 10, 9, '2026-05-14 00:47:39', '2026-05-14 02:22:03'),
-(13, '54', NULL, NULL, 9, '2026-05-14 02:21:20', '2026-05-14 02:21:20');
-
 -- --------------------------------------------------------
 
 --
@@ -95,13 +68,6 @@ CREATE TABLE `tb_email_verification` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Volcado de datos para la tabla `tb_email_verification`
---
-
-INSERT INTO `tb_email_verification` (`id_verificacion`, `id_usuario`, `token`, `created_at`) VALUES
-(17, 12, 'c61ab20d35ea9289d5efa5c1ac56b9bdd4ff1edaecb0372bade9008bff69b1cf', '2026-05-14 02:10:06');
-
 -- --------------------------------------------------------
 
 --
@@ -114,13 +80,6 @@ CREATE TABLE `tb_password_reset` (
   `token` varchar(100) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Volcado de datos para la tabla `tb_password_reset`
---
-
-INSERT INTO `tb_password_reset` (`id_reset`, `id_usuario`, `token`, `created_at`) VALUES
-(21, 8, 'fbb584cd00a484d3aaf3276d39ef7ca3d0c0fdfc1951a138e7c42303dde80ebf', '2026-05-14 00:06:44');
 
 -- --------------------------------------------------------
 
@@ -194,10 +153,7 @@ CREATE TABLE `tb_users` (
 --
 
 INSERT INTO `tb_users` (`id_usuario`, `nombre`, `email`, `password_user`, `id_rol`, `email_verificado`, `email_verificado_at`, `created_at`, `updated_at`) VALUES
-(3, 'jose', 'jose@gmail.com', '$2y$10$m/pNiS8E/qANdGDpz999sOabjm2oGHZDyyK2JubW0Bz4GIJ88yVDy', 1, 1, '2026-04-23 10:26:42', '2025-12-01 02:14:24', '2025-12-01 02:17:12'),
-(8, 'jose', 'jr7392281@gmail.com', '$2y$10$zeYnvIEwBlI7g5AWjRhlf.lgQ6lcHOzOlij72JcytPS/P58FbtvJm', 2, 1, '2026-04-23 15:06:15', '2026-04-23 20:02:47', '2026-04-29 17:04:37'),
-(9, 'jose', 'jrr81532@gmail.com', '$2y$10$eTCyL3qpBcTbfgcCYTX3kehsvlTDmTP1o9FJHviBtmNfwIpmDIi2S', 1, 1, '2026-04-23 15:20:13', '2026-04-23 20:14:51', '2026-04-23 20:20:13'),
-(12, 'John', 'jotiro949@gmail.com', '$2y$10$K7WfdflEDxsADjKCzJ0pmOh4V9aDbeapC.v2gF3w8pPaA12DYWhRS', 2, 0, NULL, '2026-05-14 02:10:06', '2026-05-14 02:10:06');
+(1, 'Administrador Demo', 'admin@demo.com', '$2y$10$rK147kXTXinuZ0O/q83huugDnS2/LfXx73U6P2hOqUPuR/XL/OWoG', 1, 1, '2026-06-03 13:51:26', '2026-06-03 18:51:26', '2026-06-03 18:51:26');
 
 --
 -- Índices para tablas volcadas
@@ -263,25 +219,25 @@ ALTER TABLE `tb_users`
 -- AUTO_INCREMENT de la tabla `tb_archivos`
 --
 ALTER TABLE `tb_archivos`
-  MODIFY `id_archivos` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id_archivos` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tb_carpetas`
 --
 ALTER TABLE `tb_carpetas`
-  MODIFY `id_carpeta` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_carpeta` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tb_email_verification`
 --
 ALTER TABLE `tb_email_verification`
-  MODIFY `id_verificacion` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id_verificacion` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tb_password_reset`
 --
 ALTER TABLE `tb_password_reset`
-  MODIFY `id_reset` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_reset` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tb_permision`
@@ -299,7 +255,7 @@ ALTER TABLE `tb_roles`
 -- AUTO_INCREMENT de la tabla `tb_users`
 --
 ALTER TABLE `tb_users`
-  MODIFY `id_usuario` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id_usuario` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restricciones para tablas volcadas
