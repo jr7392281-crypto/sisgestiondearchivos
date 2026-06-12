@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-06-2026 a las 00:12:11
+-- Tiempo de generación: 12-06-2026 a las 17:59:06
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -39,6 +39,29 @@ CREATE TABLE `tb_archivos` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `tb_archivos`
+--
+
+INSERT INTO `tb_archivos` (`id_archivos`, `nombre`, `estado_archivo`, `id_carpeta`, `tipo`, `tamaño`, `ruta`, `created_at`, `updated_at`) VALUES
+(1, '20260611160743__inventario.xlsx', 'publico', 1, 'xlsx', 10438, 'storage/public/1/1/20260611160743__inventario.xlsx', '2026-06-11 21:07:43', '2026-06-12 01:36:19');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tb_archivos_compartidos`
+--
+
+CREATE TABLE `tb_archivos_compartidos` (
+  `id_compartido` int(11) UNSIGNED NOT NULL,
+  `id_archivo` int(11) UNSIGNED NOT NULL,
+  `id_usuario_origen` int(11) UNSIGNED NOT NULL,
+  `id_usuario_destino` int(11) UNSIGNED NOT NULL,
+  `permiso` enum('ver','descargar') NOT NULL DEFAULT 'ver',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- --------------------------------------------------------
 
 --
@@ -55,6 +78,13 @@ CREATE TABLE `tb_carpetas` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Volcado de datos para la tabla `tb_carpetas`
+--
+
+INSERT INTO `tb_carpetas` (`id_carpeta`, `nombre`, `color`, `carpeta_padre_id`, `id_usuario`, `created_at`, `updated_at`) VALUES
+(1, 'documentos de excel', NULL, NULL, 1, '2026-06-11 21:07:18', '2026-06-11 21:07:18');
+
 -- --------------------------------------------------------
 
 --
@@ -66,6 +96,39 @@ CREATE TABLE `tb_email_verification` (
   `id_usuario` int(10) UNSIGNED NOT NULL,
   `token` varchar(100) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tb_enlaces_compartidos`
+--
+
+CREATE TABLE `tb_enlaces_compartidos` (
+  `id_enlace` int(11) UNSIGNED NOT NULL,
+  `id_archivo` int(11) UNSIGNED NOT NULL,
+  `id_usuario_creador` int(11) UNSIGNED NOT NULL,
+  `token` varchar(100) NOT NULL,
+  `activo` tinyint(1) NOT NULL DEFAULT 1,
+  `fecha_expiracion` datetime DEFAULT NULL,
+  `total_descargas` int(11) UNSIGNED NOT NULL DEFAULT 0,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tb_papelera_archivos`
+--
+
+CREATE TABLE `tb_papelera_archivos` (
+  `id_papelera` int(11) UNSIGNED NOT NULL,
+  `id_archivo` int(11) UNSIGNED NOT NULL,
+  `id_usuario_elimino` int(11) UNSIGNED NOT NULL,
+  `fecha_eliminacion` datetime NOT NULL,
+  `fecha_expiracion` datetime DEFAULT NULL,
+  `created_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -167,6 +230,15 @@ ALTER TABLE `tb_archivos`
   ADD KEY `carpeta_id` (`id_carpeta`);
 
 --
+-- Indices de la tabla `tb_archivos_compartidos`
+--
+ALTER TABLE `tb_archivos_compartidos`
+  ADD PRIMARY KEY (`id_compartido`),
+  ADD UNIQUE KEY `uq_archivo_usuario_destino` (`id_archivo`,`id_usuario_destino`),
+  ADD KEY `id_usuario_origen` (`id_usuario_origen`),
+  ADD KEY `id_usuario_destino` (`id_usuario_destino`);
+
+--
 -- Indices de la tabla `tb_carpetas`
 --
 ALTER TABLE `tb_carpetas`
@@ -181,6 +253,23 @@ ALTER TABLE `tb_email_verification`
   ADD PRIMARY KEY (`id_verificacion`),
   ADD UNIQUE KEY `uq_tb_email_verification_token` (`token`),
   ADD UNIQUE KEY `uq_tb_email_verification_user` (`id_usuario`);
+
+--
+-- Indices de la tabla `tb_enlaces_compartidos`
+--
+ALTER TABLE `tb_enlaces_compartidos`
+  ADD PRIMARY KEY (`id_enlace`),
+  ADD UNIQUE KEY `uq_enlace_token` (`token`),
+  ADD KEY `id_archivo` (`id_archivo`),
+  ADD KEY `id_usuario_creador` (`id_usuario_creador`);
+
+--
+-- Indices de la tabla `tb_papelera_archivos`
+--
+ALTER TABLE `tb_papelera_archivos`
+  ADD PRIMARY KEY (`id_papelera`),
+  ADD UNIQUE KEY `uq_papelera_archivo` (`id_archivo`),
+  ADD KEY `id_usuario_elimino` (`id_usuario_elimino`);
 
 --
 -- Indices de la tabla `tb_password_reset`
@@ -219,19 +308,37 @@ ALTER TABLE `tb_users`
 -- AUTO_INCREMENT de la tabla `tb_archivos`
 --
 ALTER TABLE `tb_archivos`
-  MODIFY `id_archivos` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_archivos` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `tb_archivos_compartidos`
+--
+ALTER TABLE `tb_archivos_compartidos`
+  MODIFY `id_compartido` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tb_carpetas`
 --
 ALTER TABLE `tb_carpetas`
-  MODIFY `id_carpeta` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_carpeta` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `tb_email_verification`
 --
 ALTER TABLE `tb_email_verification`
   MODIFY `id_verificacion` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `tb_enlaces_compartidos`
+--
+ALTER TABLE `tb_enlaces_compartidos`
+  MODIFY `id_enlace` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `tb_papelera_archivos`
+--
+ALTER TABLE `tb_papelera_archivos`
+  MODIFY `id_papelera` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `tb_password_reset`
@@ -268,6 +375,14 @@ ALTER TABLE `tb_archivos`
   ADD CONSTRAINT `tb_archivos_ibfk_1` FOREIGN KEY (`id_carpeta`) REFERENCES `tb_carpetas` (`id_carpeta`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Filtros para la tabla `tb_archivos_compartidos`
+--
+ALTER TABLE `tb_archivos_compartidos`
+  ADD CONSTRAINT `fk_compartidos_archivo` FOREIGN KEY (`id_archivo`) REFERENCES `tb_archivos` (`id_archivos`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_compartidos_usuario_destino` FOREIGN KEY (`id_usuario_destino`) REFERENCES `tb_users` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_compartidos_usuario_origen` FOREIGN KEY (`id_usuario_origen`) REFERENCES `tb_users` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Filtros para la tabla `tb_carpetas`
 --
 ALTER TABLE `tb_carpetas`
@@ -279,6 +394,20 @@ ALTER TABLE `tb_carpetas`
 --
 ALTER TABLE `tb_email_verification`
   ADD CONSTRAINT `fk_email_verification_user` FOREIGN KEY (`id_usuario`) REFERENCES `tb_users` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `tb_enlaces_compartidos`
+--
+ALTER TABLE `tb_enlaces_compartidos`
+  ADD CONSTRAINT `fk_enlaces_archivo` FOREIGN KEY (`id_archivo`) REFERENCES `tb_archivos` (`id_archivos`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_enlaces_usuario` FOREIGN KEY (`id_usuario_creador`) REFERENCES `tb_users` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `tb_papelera_archivos`
+--
+ALTER TABLE `tb_papelera_archivos`
+  ADD CONSTRAINT `fk_papelera_archivo` FOREIGN KEY (`id_archivo`) REFERENCES `tb_archivos` (`id_archivos`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_papelera_usuario` FOREIGN KEY (`id_usuario_elimino`) REFERENCES `tb_users` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `tb_password_reset`

@@ -161,6 +161,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </li>
                         <!-- fin de mi unidad -->
                         <li class="nav-item">
+                            <a href="<?php echo $URL; ?>/unidad/compartidos.php" class="nav-link active">
+                                <i class="nav-icon fas fa-share-alt"></i>
+                                <p>Compartidos conmigo</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo $URL; ?>/unidad/papelera.php" class="nav-link active">
+                                <i class="nav-icon fas fa-trash"></i>
+                                <p>Papelera</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="<?php echo $URL; ?>/app/controllers/login/cerrar_sesion.php" class="nav-link"
                                 style="background-color: #ca0a0b;">
                                 <i class="nav-icon fas fa-door-closed"></i>

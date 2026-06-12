@@ -10,22 +10,37 @@ if ($id_archivo <= 0) {
     exit('Archivo invalido');
 }
 
-// Privado: solo el propietario puede ver el archivo.
-$sql = "SELECT ar.nombre, ar.tipo, ar.ruta
+// Permite ver archivos propios o archivos compartidos con el usuario.
+$sql = "SELECT ar.nombre, ar.tipo, ar.ruta,
+               ca.id_usuario AS id_dueno,
+               ac.permiso AS permiso_compartido
         FROM tb_archivos ar
         INNER JOIN tb_carpetas ca ON ca.id_carpeta = ar.id_carpeta
+        LEFT JOIN tb_archivos_compartidos ac ON ac.id_archivo = ar.id_archivos
+          AND ac.id_usuario_destino = :id_usuario_compartido
+        LEFT JOIN tb_papelera_archivos pa ON pa.id_archivo = ar.id_archivos
         WHERE ar.id_archivos = :id_archivo
-          AND ca.id_usuario = :id_usuario
+          AND pa.id_papelera IS NULL
+          AND (ca.id_usuario = :id_usuario OR ac.id_compartido IS NOT NULL)
         LIMIT 1";
 $query = $pdo->prepare($sql);
 $query->bindValue(':id_archivo', $id_archivo, PDO::PARAM_INT);
 $query->bindValue(':id_usuario', $id_usuario_sesion, PDO::PARAM_INT);
+$query->bindValue(':id_usuario_compartido', $id_usuario_sesion, PDO::PARAM_INT);
 $query->execute();
 $archivo = $query->fetch(PDO::FETCH_ASSOC);
 
 if (!$archivo) {
     http_response_code(403);
     exit('Sin permiso');
+}
+
+$es_dueno = (int) $archivo['id_dueno'] == (int) $id_usuario_sesion;
+$permiso_compartido = (string) ($archivo['permiso_compartido'] ?? '');
+
+if ($descargar && !$es_dueno && $permiso_compartido != 'descargar') {
+    http_response_code(403);
+    exit('Sin permiso de descarga');
 }
 
 $ruta = ltrim((string) ($archivo['ruta'] ?? ''), '/');

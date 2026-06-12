@@ -1,21 +1,25 @@
 <?php
 include('../../config.php');
 
-$id_archivo = isset($_GET['id']) ? $_GET['id'] : '';
+$token = isset($_GET['token']) ? trim((string) $_GET['token']) : '';
 $descargar = isset($_GET['descargar']) ? $_GET['descargar'] : '0';
 
-if ($id_archivo === '' || !ctype_digit($id_archivo) || $id_archivo == '0') {
+if ($token === '') {
     http_response_code(400);
-    exit('Archivo invalido');
+    exit('Enlace invalido');
 }
 
-$sql = "SELECT id_archivos, nombre, tipo, ruta
-        FROM tb_archivos
-        WHERE id_archivos = :id_archivo
-          AND estado_archivo = 'publico'
+$sql = "SELECT ar.id_archivos, ar.nombre, ar.tipo, ar.ruta, en.id_enlace
+        FROM tb_enlaces_compartidos en
+        INNER JOIN tb_archivos ar ON ar.id_archivos = en.id_archivo
+        LEFT JOIN tb_papelera_archivos pa ON pa.id_archivo = ar.id_archivos
+        WHERE en.token = :token
+          AND en.activo = 1
+          AND pa.id_papelera IS NULL
+          AND (en.fecha_expiracion IS NULL OR en.fecha_expiracion > NOW())
         LIMIT 1";
 $query = $pdo->prepare($sql);
-$query->bindParam(':id_archivo', $id_archivo, PDO::PARAM_INT);
+$query->bindParam(':token', $token, PDO::PARAM_STR);
 $query->execute();
 $archivo = $query->fetch(PDO::FETCH_ASSOC);
 
@@ -31,12 +35,16 @@ if ($ruta === '') {
 }
 
 $ruta = ltrim($ruta, '/');
-if (strpos($ruta, 'storage/public/') !== 0 || strpos($ruta, '..') !== false) {
+if (strpos($ruta, '..') !== false) {
     http_response_code(404);
     exit('Ruta no valida');
 }
 
-$ruta_fisica = rtrim(dirname(__DIR__, 3), "/\\") . '/' . $ruta;
+if (strpos($ruta, 'private/') === 0) {
+    $ruta_fisica = rtrim($PRIVATE_STORAGE, "/\\") . '/' . substr($ruta, 8);
+} else {
+    $ruta_fisica = rtrim(dirname(__DIR__, 3), "/\\") . '/' . $ruta;
+}
 if (!is_file($ruta_fisica)) {
     http_response_code(404);
     exit('No existe el archivo');
@@ -58,6 +66,11 @@ header('Content-Type: ' . $mime);
 header('Content-Length: ' . filesize($ruta_fisica));
 if ($descargar == '1') {
     header('Content-Disposition: attachment; filename="' . basename($archivo['nombre']) . '"');
+    $update_descargas = $pdo->prepare("UPDATE tb_enlaces_compartidos SET total_descargas = total_descargas + 1, updated_at = :updated_at WHERE id_enlace = :id_enlace");
+    $update_descargas->execute([
+        ':updated_at' => $fechaHora,
+        ':id_enlace' => $archivo['id_enlace']
+    ]);
 } else {
     header('Content-Disposition: inline; filename="' . basename($archivo['nombre']) . '"');
 }

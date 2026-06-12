@@ -6,6 +6,20 @@ include('../app/controllers/carpeta/show_carpetas.php');
 include('../app/controllers/carpeta/show_subcarpetas.php');
 include('../app/controllers/archivo/listado_archivos.php');
 
+$query_usuarios_compartir = $pdo->prepare("SELECT id_usuario, nombre, email
+                                           FROM tb_users
+                                           WHERE id_usuario <> :id_usuario
+                                           ORDER BY nombre");
+$query_usuarios_compartir->bindParam(':id_usuario', $id_usuario_sesion, PDO::PARAM_INT);
+$query_usuarios_compartir->execute();
+$usuarios_para_compartir = $query_usuarios_compartir->fetchAll(PDO::FETCH_ASSOC);
+
+if (isset($_GET['compartir'])) {
+    $modal_compartir_id = (int) $_GET['compartir'];
+} else {
+    $modal_compartir_id = 0;
+}
+
 ?>
 <div class="content-wrapper px-5">
     <div class="content-header">
@@ -266,10 +280,22 @@ include('../app/controllers/archivo/listado_archivos.php');
                     $estado_actual = (isset($archivos_dato['estado_archivo']) && $archivos_dato['estado_archivo'] === 'publico')
                         ? 'publico'
                         : 'privado';
+                    $token_enlace = isset($archivos_dato['enlace_token']) ? (string) $archivos_dato['enlace_token'] : '';
                     $url_privado = $URL . '/app/controllers/archivo/ver_archivo.php?id=' . $id_archivo;
-                    $url_compartir = $URL . '/app/controllers/archivo/ver_publico.php?id=' . $id_archivo;
-                    $url_archivo = $estado_actual === 'publico' ? $url_compartir : $url_privado;
+                    $url_compartir = $token_enlace !== '' ? $URL . '/app/controllers/archivo/ver_publico.php?token=' . urlencode($token_enlace) . '&descargar=1' : '';
+                    $url_archivo = $url_privado;
                     $url_descarga = $url_archivo . '&descargar=1';
+
+                    $query_compartidos_archivo = $pdo->prepare("SELECT ac.id_usuario_destino, ac.permiso, us.nombre, us.email
+                                                                FROM tb_archivos_compartidos as ac
+                                                                INNER JOIN tb_users as us ON us.id_usuario = ac.id_usuario_destino
+                                                                WHERE ac.id_archivo = :id_archivo
+                                                                AND ac.id_usuario_origen = :id_usuario_origen
+                                                                ORDER BY us.nombre");
+                    $query_compartidos_archivo->bindParam(':id_archivo', $id_archivo, PDO::PARAM_INT);
+                    $query_compartidos_archivo->bindParam(':id_usuario_origen', $id_usuario_sesion, PDO::PARAM_INT);
+                    $query_compartidos_archivo->execute();
+                    $usuarios_compartidos_archivo = $query_compartidos_archivo->fetchAll(PDO::FETCH_ASSOC);
 
                     ?>
                     <tr>
@@ -548,28 +574,97 @@ include('../app/controllers/archivo/listado_archivos.php');
                                                 <p style="overflow-wrap:anywhere;word-break:break-word;">
                                                     <?php echo e($archivos_dato['nombre']); ?>
                                                 </p>
-                                                <?php if ($estado_actual == 'privado') { ?>
-                                                    <b> Este archivo es privado</b> <br>
-                                                    <form action="../app/controllers/archivo/cambiar_estado.php" method="post">
+                                                <b>Enlace de descarga</b><br>
+                                                <div id="contenedor_enlace_<?php echo (int) $id_archivo; ?>">
+                                                    <?php if ($token_enlace !== '') { ?>
+                                                        <input type="text" class="form-control" id="link_<?php echo $id_archivo; ?>"
+                                                            value="<?php echo e($url_compartir); ?>" readonly>
+                                                        <br>
+                                                        <button type="button" class="btn btn-outline-primary"
+                                                            onclick="copiarEnlace('link_<?php echo $id_archivo; ?>')">Copiar
+                                                            enlace de descarga</button>
+                                                        <form action="../app/controllers/archivo/desactivar_enlace.php" method="post"
+                                                            class="mt-2 form-desactivar-enlace" data-id="<?php echo (int) $id_archivo; ?>">
+                                                            <input type="text" name="id" value="<?php echo (int) $id_archivo; ?>" hidden>
+                                                            <button type="submit" class="btn btn-secondary">Desactivar enlace</button>
+                                                        </form>
+                                                    <?php } else { ?>
+                                                        <form action="../app/controllers/archivo/generar_enlace.php" method="post"
+                                                            class="form-generar-enlace" data-id="<?php echo (int) $id_archivo; ?>">
+                                                            <input type="text" name="id" value="<?php echo (int) $id_archivo; ?>" hidden>
+                                                            <button type="submit" class="btn btn-success">Generar enlace de descarga</button>
+                                                        </form>
+                                                    <?php } ?>
+                                                </div>
+
+                                                <hr>
+                                                <b>Compartir con usuario</b><br>
+                                                <?php if (!empty($usuarios_para_compartir)) { ?>
+                                                    <?php
+                                                    $archivo_office = false;
+                                                    if ($extension == 'docx' || $extension == 'xlsx' || $extension == 'pptx') {
+                                                        $archivo_office = true;
+                                                    }
+                                                    ?>
+                                                    <form action="../app/controllers/archivo/compartir_usuario.php" method="post">
                                                         <input type="text" name="id" value="<?php echo (int) $id_archivo; ?>" hidden>
-                                                        <input type="text" name="estado" value="publico" hidden>
-                                                        <button type="submit" class="btn btn-success">Cambiar a publico</button>
+                                                        <div class="form-group mt-2">
+                                                            <select name="id_usuario_destino" class="form-control" required>
+                                                                <option value="">Seleccione usuario</option>
+                                                                <?php foreach ($usuarios_para_compartir as $usuario_compartir) { ?>
+                                                                    <option value="<?php echo (int) $usuario_compartir['id_usuario']; ?>">
+                                                                        <?php echo e($usuario_compartir['nombre'] . ' - ' . $usuario_compartir['email']); ?>
+                                                                    </option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                        <?php if ($archivo_office) { ?>
+                                                            <input type="text" name="permiso" value="descargar" hidden>
+                                                            <small class="text-muted">
+                                                                Este tipo de archivo se comparte para descargar y abrir en Office.
+                                                            </small>
+                                                            <br>
+                                                        <?php } else { ?>
+                                                            <div class="form-group">
+                                                                <select name="permiso" class="form-control">
+                                                                    <option value="ver">Solo ver</option>
+                                                                    <option value="descargar">Ver y descargar</option>
+                                                                </select>
+                                                            </div>
+                                                        <?php } ?>
+                                                        <button type="submit" class="btn btn-primary">Compartir</button>
                                                     </form>
                                                 <?php } else { ?>
-                                                    <b> Este archivo es publico</b> <br>
-                                                    <form action="../app/controllers/archivo/cambiar_estado.php" method="post">
-                                                        <input type="text" name="id" value="<?php echo (int) $id_archivo; ?>" hidden>
-                                                        <input type="text" name="estado" value="privado" hidden>
-                                                        <button type="submit" class="btn btn-secondary">Cambiar a
-                                                            privado</button>
-                                                    </form>
+                                                    <p>No hay otros usuarios registrados.</p>
+                                                <?php } ?>
+
+                                                <?php if (!empty($usuarios_compartidos_archivo)) { ?>
                                                     <hr>
-                                                    <input type="text" class="form-control" id="link_<?php echo $id_archivo; ?>"
-                                                        value="<?php echo e($url_compartir); ?>" readonly>
-                                                    <br>
-                                                    <button type="button" class="btn btn-outline-primary"
-                                                        onclick="copiarEnlace('link_<?php echo $id_archivo; ?>')">Copiar
-                                                        enlace</button>
+                                                    <b>Usuarios con acceso</b>
+                                                    <div class="mt-2">
+                                                        <?php foreach ($usuarios_compartidos_archivo as $usuario_compartido) { ?>
+                                                            <div class="d-flex justify-content-between align-items-center border rounded p-2 mb-2">
+                                                                <div>
+                                                                    <strong><?php echo e($usuario_compartido['nombre']); ?></strong><br>
+                                                                    <small><?php echo e($usuario_compartido['email']); ?></small><br>
+                                                                    <small class="text-muted">
+                                                                        <?php
+                                                                        if ($usuario_compartido['permiso'] == 'descargar') {
+                                                                            echo 'Ver y descargar';
+                                                                        } else {
+                                                                            echo 'Solo ver';
+                                                                        }
+                                                                        ?>
+                                                                    </small>
+                                                                </div>
+                                                                <form action="../app/controllers/archivo/quitar_compartido.php" method="post">
+                                                                    <input type="text" name="id" value="<?php echo (int) $id_archivo; ?>" hidden>
+                                                                    <input type="text" name="id_usuario_destino" value="<?php echo (int) $usuario_compartido['id_usuario_destino']; ?>" hidden>
+                                                                    <button type="submit" class="btn btn-danger btn-sm">Quitar acceso</button>
+                                                                </form>
+                                                            </div>
+                                                        <?php } ?>
+                                                    </div>
                                                 <?php } ?>
                                             </div>
                                         </div>
@@ -659,6 +754,127 @@ include('../app/controllers/archivo/listado_archivos.php');
         });
     }
 </script>
+
+<script>
+    document.addEventListener('submit', function (e) {
+        var form = e.target.closest('.form-generar-enlace');
+        if (!form) return;
+
+        e.preventDefault();
+
+        var idArchivo = form.getAttribute('data-id');
+        var contenedor = document.getElementById('contenedor_enlace_' + idArchivo);
+        var boton = form.querySelector('button[type="submit"]');
+        var datos = new FormData(form);
+        datos.append('ajax', '1');
+
+        boton.disabled = true;
+        boton.innerText = 'Generando...';
+
+        fetch(form.action, {
+            method: 'POST',
+            body: datos
+        })
+            .then(function (respuesta) {
+                return respuesta.json();
+            })
+            .then(function (data) {
+                if (!data.ok) {
+                    throw new Error(data.mensaje || 'No se pudo generar el enlace.');
+                }
+
+                contenedor.innerHTML =
+                    '<input type="text" class="form-control" id="link_' + idArchivo + '" value="' + data.url + '" readonly>' +
+                    '<br>' +
+                    '<button type="button" class="btn btn-outline-primary" onclick="copiarEnlace(\'link_' + idArchivo + '\')">Copiar enlace de descarga</button>' +
+                    '<form action="../app/controllers/archivo/desactivar_enlace.php" method="post" class="mt-2 form-desactivar-enlace" data-id="' + idArchivo + '">' +
+                    '<input type="text" name="id" value="' + idArchivo + '" hidden>' +
+                    '<button type="submit" class="btn btn-secondary">Desactivar enlace</button>' +
+                    '</form>';
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Enlace generado',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            })
+            .catch(function (error) {
+                boton.disabled = false;
+                boton.innerText = 'Generar enlace de descarga';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: error.message
+                });
+            });
+    });
+</script>
+
+<script>
+    document.addEventListener('submit', function (e) {
+        var form = e.target.closest('.form-desactivar-enlace');
+        if (!form) return;
+
+        e.preventDefault();
+
+        var idArchivo = form.getAttribute('data-id');
+        var contenedor = document.getElementById('contenedor_enlace_' + idArchivo);
+        var boton = form.querySelector('button[type="submit"]');
+        var datos = new FormData(form);
+        datos.append('ajax', '1');
+
+        boton.disabled = true;
+        boton.innerText = 'Desactivando...';
+
+        fetch(form.action, {
+            method: 'POST',
+            body: datos
+        })
+            .then(function (respuesta) {
+                return respuesta.json();
+            })
+            .then(function (data) {
+                if (!data.ok) {
+                    throw new Error(data.mensaje || 'No se pudo desactivar el enlace.');
+                }
+
+                contenedor.innerHTML =
+                    '<form action="../app/controllers/archivo/generar_enlace.php" method="post" class="form-generar-enlace" data-id="' + idArchivo + '">' +
+                    '<input type="text" name="id" value="' + idArchivo + '" hidden>' +
+                    '<button type="submit" class="btn btn-success">Generar enlace de descarga</button>' +
+                    '</form>';
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Enlace desactivado',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            })
+            .catch(function (error) {
+                boton.disabled = false;
+                boton.innerText = 'Desactivar enlace';
+
+                Swal.fire({
+                    icon: 'error',
+                    title: error.message
+                });
+            });
+    });
+</script>
+
+<?php if ($modal_compartir_id > 0) { ?>
+    <script>
+        window.addEventListener('load', function () {
+            $('#modal_compartir<?php echo (int) $modal_compartir_id; ?>').modal('show');
+        });
+    </script>
+<?php } ?>
 
 
 <?php
